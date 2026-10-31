@@ -1,0 +1,1458 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Tipografía Oficial Lato */
+  --font-sans: 'Lato', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: 'Lato', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* Colores Principales Oficiales Neblina 105.5 FM */
+  --color-neblina-navy: #001E4D;          /* Azul Marino Profundo (HEX: #001E4D | RGB: 0, 30, 77) */
+  --color-neblina-deep: #001438;          /* Azul Marino Nocturno */
+  --color-neblina-turquesa: #00DD9E;      /* Cian / Verde Turquesa Brillante (HEX: #00DD9E | RGB: 0, 221, 158) */
+  --color-neblina-cyan: #00DD9E;          /* Alias Oficial */
+  --color-neblina-teal: #00DD9E;          /* Alias Oficial */
+  --color-neblina-white: #FFFFFF;         /* Blanco Puro (HEX: #FFFFFF | RGB: 255, 255, 255) */
+
+  /* Colores Secundarios Oficiales (Tonos Pastel) */
+  --color-neblina-sky-pastel: #B9EBFF;     /* Azul Celeste Pastel (RGB: 185, 235, 255) */
+  --color-neblina-lavender-pastel: #EBE1FA;/* Lavanda / Lila Suave (RGB: 235, 225, 250) */
+
+  /* Colores de Apoyo y Legibilidad */
+  --color-true-black: #000000;
+  --color-fog-white: #FFFFFF;
+  --color-pure-white: #ffffff;
+  --color-obsidian: #001E4D;
+  --color-charcoal: #001E4D;
+  --color-smoke: #1f2d42;
+  --color-graphite: #324461;
+  --color-ash-gray: #6b7f9e;
+  --color-pale-mist: #d6e2ee;
+  --color-apple-blue: #00DD9E;
+  --color-link-blue: #00DD9E;
+  --color-deep-link: #001E4D;
+}
+
+:root {
+  --verde-agua: #00dd9e;
+  --azul-marino: #001e4d;
+  --fondo-base: #eef2f5;
+  color-scheme: dark;
+}
+
+html.dark {
+  --verde-agua: #00dd9e;
+  --azul-marino: #001e4d;
+  --fondo-base: #001433;
+  color-scheme: dark;
+}
+
+html.light {
+  --verde-agua: #00dd9e;
+  --azul-marino: #001e4d;
+  --fondo-base: #eef2f5;
+  color-scheme: light;
+}
+
+body {
+  font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  background-color: var(--fondo-base);
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+/* Modo Oscuro: Canvas Azul Marino Profundo Corporativo con Textos Blanco Puro */
+html.dark body {
+  background-color: #001433;
+  color: #FFFFFF;
+}
+
+/* Modo Claro: Canvas Base Suave Oficial con Textos Azul Marino Profundo Corporativo */
+html.light body {
+  background-color: #eef2f5;
+  color: #001E4D;
+}
+
+/* Tipografía de Títulos y Encabezados */
+.font-display {
+  font-family: 'Lato', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-optical-sizing: auto;
+}
+
+/* ========================================================================= */
+/* TIPOGRAFÍA ÓPTICA DINÁMICA APPLE (WWDC "The Details of UI Typography")     */
+/* Calibración inversa: grande = tracking negativo cerrado; micro = abierto  */
+/* ========================================================================= */
+
+/* Títulos Grandes (Display / Hero / Modales): Tracking Negativo y Leading Compacto */
+h1, 
+.font-display-hero, 
+.text-3xl.font-display, 
+.text-4xl.font-display, 
+.text-5xl.font-display {
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+
+/* Títulos Medianos (Secciones y Destacados) */
+h2, 
+.text-2xl.font-display {
+  letter-spacing: -0.020em;
+  line-height: 1.22;
+}
+
+/* Títulos Secundarios */
+h3, 
+.text-xl.font-display {
+  letter-spacing: -0.012em;
+  line-height: 1.28;
+}
+
+/* Encabezados Pequeños y Subtítulos */
+h4, 
+h5, 
+.text-base.font-display, 
+.text-lg.font-display {
+  letter-spacing: -0.005em;
+  line-height: 1.38;
+}
+
+/* Micro-Títulos y Etiquetas de Texto */
+.text-sm.font-display, 
+.text-xs.font-display {
+  letter-spacing: 0em;
+  line-height: 1.45;
+}
+
+/* Compensación Positiva Óptica para Micro-Etiquetas, Badges y Mayúsculas */
+.tracking-wider,
+.uppercase.tracking-wider,
+.badge-optical {
+  letter-spacing: 0.055em !important;
+}
+
+.tracking-widest,
+.uppercase.tracking-widest {
+  letter-spacing: 0.08em !important;
+}
+
+/* Apple iOS Squircle Shape */
+.squircle-ios {
+  border-radius: 22.37%;
+}
+
+/* Barras de scroll con el Cian / Verde Turquesa Oficial (#00DD9E) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 221, 158, 0.4);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00DD9E;
+}
+
+/* ========================================================================= */
+/* 1. LOGOTIPO OFICIAL NEBLINA 105.5 FM: VECTOR PURO, NÍTIDO Y SIN HALOS IA  */
+/* ========================================================================= */
+
+.anim-logo-halo {
+  display: none !important;
+}
+
+.anim-logo-glow,
+.anim-logo-reflect {
+  filter: none !important;
+  animation: none !important;
+}
+
+/* 2. Transición Fluida Estilo Apple con Resorte Críticamente Amortiguado (Damping 1.0) */
+@keyframes tabEnter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-tab-enter,
+.animate-fadeIn {
+  animation: tabEnter 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-float-1,
+  .anim-float-2,
+  .anim-rotate-slow,
+  .anim-mist-1,
+  .anim-mist-2,
+  .anim-logo-halo,
+  .anim-logo-glow,
+  .anim-tab-enter,
+  .anim-drawer-in {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ========================================================================= */
+/* APPLE AEROGLASS / LIQUID GLASS DESIGN SYSTEM (macOS & iOS HIG)            */
+/* ========================================================================= */
+
+/* 1. Cabecera Flotante Aeroglass (Floating Header Capsule) */
+.aeroglass-nav {
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+}
+
+html.dark .aeroglass-nav {
+  background: linear-gradient(135deg, rgba(0, 30, 77, 0.76) 0%, rgba(0, 18, 48, 0.84) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.30);
+  box-shadow: 
+    0 16px 40px -10px rgba(0, 0, 0, 0.70),
+    0 4px 14px -2px rgba(0, 0, 0, 0.40),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+html.light .aeroglass-nav {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(245, 250, 255, 0.76) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  border-top-color: rgba(255, 255, 255, 1);
+  box-shadow: 
+    0 16px 36px -10px rgba(0, 30, 77, 0.12),
+    0 4px 12px -2px rgba(0, 30, 77, 0.05),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 1);
+}
+
+/* 2. Tarjetas y Módulos Aeroglass (Apple Cards con Refracción Líquida Calibrada) */
+.aeroglass-card,
+.glass-card,
+.aeroglass-container {
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-radius: 16px;
+  contain: layout style paint;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+              border-color 0.22s ease;
+}
+
+@media (max-width: 768px) {
+  .aeroglass-card,
+  .glass-card,
+  .aeroglass-container {
+    backdrop-filter: blur(12px) saturate(145%);
+    -webkit-backdrop-filter: blur(12px) saturate(145%);
+  }
+}
+
+html.dark .aeroglass-card,
+html.dark .glass-card,
+html.dark .aeroglass-container {
+  background: linear-gradient(145deg, rgba(0, 30, 77, 0.65) 0%, rgba(0, 16, 44, 0.78) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.22);
+  box-shadow: 
+    0 12px 32px -8px rgba(0, 0, 0, 0.55),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+html.light .aeroglass-card,
+html.light .glass-card,
+html.light .aeroglass-container {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.86) 0%, rgba(246, 250, 255, 0.80) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-top-color: #ffffff;
+  box-shadow: 
+    0 12px 32px -8px rgba(0, 30, 77, 0.07),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Elevación Física Natural estilo Apple (Sin halos de neón) */
+html.dark .aeroglass-card:hover,
+html.dark .glass-card:hover,
+html.dark .aeroglass-container:hover:not(.no-hover-lift) {
+  transform: translateY(-2px) translate3d(0, 0, 0);
+  border-color: rgba(255, 255, 255, 0.18);
+  border-top-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 
+    0 20px 48px -10px rgba(0, 0, 0, 0.72),
+    0 6px 16px rgba(0, 0, 0, 0.40),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+html.light .aeroglass-card:hover,
+html.light .glass-card:hover,
+html.light .aeroglass-container:hover:not(.no-hover-lift) {
+  transform: translateY(-2px) translate3d(0, 0, 0);
+  border-color: rgba(0, 30, 77, 0.10);
+  border-top-color: #ffffff;
+  box-shadow: 
+    0 20px 44px -10px rgba(0, 30, 77, 0.12),
+    0 6px 14px rgba(0, 30, 77, 0.04),
+    inset 0 1px 1.5px 0 #ffffff;
+}
+
+/* Sub-contenedores internos, tarjetas secundarias y bloques de formularios en modo Aeroglass */
+.aeroglass-subcard,
+.subpanel-aeroglass {
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border-radius: 14px;
+}
+
+html.dark .aeroglass-subcard,
+html.dark .subpanel-aeroglass {
+  background: rgba(0, 20, 52, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-top-color: rgba(255, 255, 255, 0.20);
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+html.light .aeroglass-subcard,
+html.light .subpanel-aeroglass {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-top-color: #ffffff;
+  box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.90);
+}
+
+/* Modales y Diálogos Superpuestos (iOS Sheets y Modales) */
+.fixed.inset-0.z-\[99999\] > div,
+.fixed.inset-0.z-50 > div {
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+}
+
+html.dark .fixed.inset-0.z-\[99999\] > div,
+html.dark .fixed.inset-0.z-50 > div {
+  background: linear-gradient(160deg, rgba(0, 30, 77, 0.88) 0%, rgba(0, 16, 44, 0.95) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-top-color: rgba(255, 255, 255, 0.35) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+html.light .fixed.inset-0.z-\[99999\] > div,
+html.light .fixed.inset-0.z-50 > div {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 250, 255, 0.88) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #ffffff !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 30, 77, 0.14), inset 0 1px 1.5px 0 #ffffff !important;
+}
+
+/* 3. Paneles de Sistema, Modales y Diálogos Aeroglass */
+.aeroglass-panel,
+.glass-panel,
+.aeroglass-dialog,
+.aeroglass-sheet {
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  contain: layout style;
+}
+
+@media (max-width: 768px) {
+  .aeroglass-panel,
+  .glass-panel,
+  .aeroglass-dialog,
+  .aeroglass-sheet {
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+  }
+}
+
+html.dark .aeroglass-panel,
+html.dark .glass-panel,
+html.dark .aeroglass-dialog,
+html.dark .aeroglass-sheet {
+  background: linear-gradient(160deg, rgba(0, 30, 77, 0.85) 0%, rgba(0, 16, 42, 0.92) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(255, 255, 255, 0.28);
+  box-shadow: 
+    0 24px 60px -15px rgba(0, 0, 0, 0.75),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+html.light .aeroglass-panel,
+html.light .glass-panel,
+html.light .aeroglass-dialog,
+html.light .aeroglass-sheet {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 250, 255, 0.88) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-top-color: #ffffff;
+  box-shadow: 
+    0 24px 60px -15px rgba(0, 30, 77, 0.12),
+    inset 0 1px 1.5px 0 #ffffff;
+}
+
+/* ========================================================================= */
+/* REGLA MAESTRA AUTOMÁTICA: ELEVACIÓN DE CONTENEDORES A ESTILO AEROGLASS    */
+/* Todo bloque o panel con clases opacas o grises se convierte en vidrio     */
+/* líquido de alta fidelidad iOS, manteniendo contraste y legibilidad        */
+/* ========================================================================= */
+html.dark div[class*="bg-slate-100"]:not(button):not(input):not(span),
+html.dark div[class*="bg-slate-50"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#1c2633]"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#19222e]"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#151f2e]"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#141b24]"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#0c141f]"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#0b1320]"]:not(button):not(input):not(span),
+html.dark div[class*="bg-[#1d1d1f]"]:not(button):not(input):not(span),
+html.dark article[class*="border"],
+html.dark div[class*="rounded-2xl"][class*="border"]:not(button):not(input):not(header):not(aside) {
+  background-color: rgba(0, 30, 77, 0.65) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.10) !important;
+  border-top-color: rgba(255, 255, 255, 0.22) !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.50), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+html.light div[class*="bg-slate-100"]:not(button):not(input):not(span),
+html.light div[class*="bg-slate-50"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#1c2633]"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#19222e]"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#151f2e]"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#141b24]"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#0c141f]"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#0b1320]"]:not(button):not(input):not(span),
+html.light div[class*="bg-[#1d1d1f]"]:not(button):not(input):not(span),
+html.light article[class*="border"],
+html.light div[class*="rounded-2xl"][class*="border"]:not(button):not(input):not(header):not(aside) {
+  background-color: rgba(255, 255, 255, 0.86) !important;
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #ffffff !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 30, 77, 0.08), inset 0 1px 1.5px 0 #ffffff;
+}
+
+/* Modales y Diálogos Superpuestos (iOS Sheets y Modales) */
+.fixed.inset-0.z-\[99999\] > div,
+.fixed.inset-0.z-50 > div {
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+
+html.dark .fixed.inset-0.z-\[99999\] > div,
+html.dark .fixed.inset-0.z-50 > div {
+  background: linear-gradient(160deg, rgba(0, 30, 77, 0.88) 0%, rgba(0, 16, 44, 0.94) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-top-color: rgba(255, 255, 255, 0.32) !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px 0 rgba(255, 255, 255, 0.20) !important;
+}
+
+html.light .fixed.inset-0.z-\[99999\] > div,
+html.light .fixed.inset-0.z-50 > div {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.94) 0%, rgba(246, 250, 255, 0.90) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  border-top-color: #ffffff !important;
+  box-shadow: 0 25px 60px -15px rgba(0, 30, 77, 0.14), inset 0 1px 1.5px 0 #ffffff !important;
+}
+
+/* ========================================================================= */
+/* 4. SISTEMA GLOBAL DE BOTONES AEROGLASS / LIQUID GLASS (macOS & iOS HIG)   */
+/* Transforma todos los botones de la página y el sistema en vidrio líquido  */
+/* refractivo con reflejo especular superior y respuesta física táctil       */
+/* ========================================================================= */
+
+/* Base Universal para TODOS los botones */
+button:not([class*="absolute"]):not([class*="fixed"]),
+[role="button"]:not([class*="absolute"]):not([class*="fixed"]),
+.aeroglass-btn,
+.btn-aeroglass {
+  position: relative;
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  touch-action: manipulation;
+  transition: transform 0.20s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.20s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.20s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.20s ease,
+              opacity 0.20s ease;
+}
+
+/* Respuesta Física Táctil Apple (Physical Click Feedback) */
+button:active:not(:disabled):not(.input-password-toggle-btn),
+[role="button"]:active:not(:disabled),
+.aeroglass-btn:active:not(:disabled) {
+  transform: scale(0.962) translate3d(0, 0, 0) !important;
+}
+
+/* Elevación física sutil en hover */
+button:hover:not(:disabled):not(.no-hover-lift):not(.input-password-toggle-btn),
+[role="button"]:hover:not(:disabled):not(.no-hover-lift),
+.aeroglass-btn:hover:not(:disabled) {
+  transform: translateY(-1.5px) translate3d(0, 0, 0);
+}
+
+/* Botones Deshabilitados */
+button:disabled,
+[role="button"][aria-disabled="true"],
+.aeroglass-btn:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* --- CLASE A: BOTONES PRIMARIOS AEROGLASS (VERDE TURQUESA / CIAN #00DD9E) --- */
+.btn-aeroglass-primary,
+button.bg-emerald-500,
+button.bg-emerald-400,
+button[class*="bg-[#00DD9E]"] {
+  background: linear-gradient(135deg, rgba(0, 221, 158, 0.88) 0%, rgba(0, 195, 140, 0.94) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.60) !important;
+  border-top-color: rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 
+    0 8px 24px -4px rgba(0, 221, 158, 0.40),
+    0 2px 6px -1px rgba(0, 221, 158, 0.20),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.75) !important;
+  color: #001E4D !important;
+}
+
+.btn-aeroglass-primary:hover,
+button.bg-emerald-500:hover,
+button.bg-emerald-400:hover,
+button[class*="bg-[#00DD9E]"]:hover {
+  background: linear-gradient(135deg, rgba(0, 240, 170, 0.96) 0%, rgba(0, 210, 150, 0.98) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.80) !important;
+  border-top-color: #ffffff !important;
+  box-shadow: 
+    0 12px 32px -4px rgba(0, 221, 158, 0.55),
+    0 4px 10px -1px rgba(0, 221, 158, 0.30),
+    inset 0 1px 2px 0 #ffffff !important;
+}
+
+/* --- CLASE B: BOTONES CORPORATIVOS AZUL MARINO (NAVY AEROGLASS #001E4D) --- */
+.btn-aeroglass-navy,
+button.bg-gradient-to-r[class*="from-[#001E4D]"],
+button[class*="bg-[#001E4D]"] {
+  background: linear-gradient(135deg, rgba(0, 30, 77, 0.86) 0%, rgba(0, 18, 48, 0.92) 100%) !important;
+  border: 1px solid rgba(0, 221, 158, 0.40) !important;
+  border-top-color: rgba(0, 221, 158, 0.80) !important;
+  box-shadow: 
+    0 8px 25px -4px rgba(0, 30, 77, 0.45),
+    0 2px 6px -1px rgba(0, 0, 0, 0.25),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.30) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-aeroglass-navy:hover,
+button.bg-gradient-to-r[class*="from-[#001E4D]"]:hover,
+button[class*="bg-[#001E4D]"]:hover {
+  background: linear-gradient(135deg, rgba(0, 42, 107, 0.92) 0%, rgba(0, 26, 68, 0.96) 100%) !important;
+  border-color: rgba(0, 221, 158, 0.65) !important;
+  border-top-color: #00DD9E !important;
+  box-shadow: 
+    0 12px 32px -4px rgba(0, 30, 77, 0.60),
+    0 4px 12px -2px rgba(0, 221, 158, 0.25),
+    inset 0 1px 2px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+/* --- CLASE C: BOTONES NEUTROS, SECUNDARIOS Y FONDOS CLAROS/OSCUROS --- */
+html.light button:not([class*="bg-emerald-"]):not([class*="bg-[#00DD9E]"]):not([class*="from-"]):not([class*="bg-rose-"]):not([class*="bg-red-"]):not([class*="bg-transparent"]):not([class*="text-"]):not([class*="hover:bg-transparent"]),
+html.light .btn-aeroglass-secondary {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(240, 246, 255, 0.55) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.90);
+  border-top-color: #ffffff;
+  box-shadow: 
+    0 4px 16px -2px rgba(0, 30, 77, 0.08),
+    0 1px 3px 0 rgba(0, 30, 77, 0.04),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95);
+  color: #001E4D;
+}
+
+html.light button:not([class*="bg-emerald-"]):not([class*="bg-[#00DD9E]"]):not([class*="from-"]):not([class*="bg-rose-"]):not([class*="bg-red-"]):not([class*="bg-transparent"]):hover,
+html.light .btn-aeroglass-secondary:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(242, 248, 255, 0.75) 100%);
+  border-color: rgba(0, 30, 77, 0.14);
+  border-top-color: #ffffff;
+  box-shadow: 
+    0 8px 24px -4px rgba(0, 30, 77, 0.14),
+    0 2px 6px -1px rgba(0, 30, 77, 0.06),
+    inset 0 1px 2px 0 #ffffff;
+}
+
+html.dark button:not([class*="bg-emerald-"]):not([class*="bg-[#00DD9E]"]):not([class*="from-"]):not([class*="bg-rose-"]):not([class*="bg-red-"]):not([class*="bg-transparent"]):not([class*="hover:bg-transparent"]),
+html.dark .btn-aeroglass-secondary {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-top-color: rgba(255, 255, 255, 0.38);
+  box-shadow: 
+    0 4px 18px -2px rgba(0, 0, 0, 0.50),
+    0 1px 3px 0 rgba(0, 0, 0, 0.30),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+html.dark button:not([class*="bg-emerald-"]):not([class*="bg-[#00DD9E]"]):not([class*="from-"]):not([class*="bg-rose-"]):not([class*="bg-red-"]):not([class*="bg-transparent"]):hover,
+html.dark .btn-aeroglass-secondary:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0.09) 100%);
+  border-color: rgba(255, 255, 255, 0.26);
+  border-top-color: rgba(255, 255, 255, 0.55);
+  box-shadow: 
+    0 8px 28px -4px rgba(0, 0, 0, 0.70),
+    0 2px 8px -1px rgba(0, 0, 0, 0.40),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.38);
+}
+
+/* --- CLASE D: BOTONES DESTRUCTIVOS O DE ALERTA (ROSE AEROGLASS) --- */
+.btn-aeroglass-danger,
+button.bg-rose-500,
+button.bg-rose-600,
+button.bg-red-500,
+button.bg-red-600 {
+  background: linear-gradient(135deg, rgba(244, 63, 94, 0.88) 0%, rgba(225, 29, 72, 0.94) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.40) !important;
+  border-top-color: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 
+    0 8px 24px -4px rgba(244, 63, 94, 0.45),
+    0 2px 6px -1px rgba(244, 63, 94, 0.20),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.55) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-aeroglass-danger:hover,
+button.bg-rose-500:hover,
+button.bg-rose-600:hover,
+button.bg-red-500:hover,
+button.bg-red-600:hover {
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.94) 0%, rgba(225, 29, 72, 0.98) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.60) !important;
+  border-top-color: #ffffff !important;
+  box-shadow: 
+    0 12px 30px -4px rgba(244, 63, 94, 0.60),
+    inset 0 1px 2px 0 #ffffff !important;
+}
+
+/* --- CLASE E: BOTONES PLANOS / SIN CONTENEDOR (HIG BORDERLESS / PLAIN) --- */
+/* Pestañas de navegación, controles segmentados, cierres e iconos utilitarios */
+button.btn-plain,
+button.border-0,
+button[class*="bg-transparent"],
+button[class*="input-password-toggle-btn"],
+nav button:not(.btn-aeroglass-primary):not(.btn-aeroglass-secondary),
+.btn-plain {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+
+/* Reglas universales para el botón de visibilidad de contraseña (ojito) */
+.input-password-wrapper {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+}
+
+.input-password-toggle-btn {
+  position: absolute !important;
+  right: 12px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  margin: auto 0 !important;
+  height: 28px !important;
+  width: 28px !important;
+  transform: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 30 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
+.input-password-toggle-btn:hover,
+.input-password-toggle-btn:active {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+button.btn-plain:hover,
+button.border-0:hover,
+button[class*="bg-transparent"]:hover,
+nav button:not(.btn-aeroglass-primary):not(.btn-aeroglass-secondary):hover,
+.btn-plain:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* --- CLASE E: BOTONES TINTADOS TRASLÚCIDOS (CHIPS, FILTROS Y BADGES) --- */
+button[class*="bg-sky-500/"],
+button[class*="bg-purple-500/"],
+button[class*="bg-amber-500/"],
+button[class*="bg-emerald-500/"],
+button[class*="bg-rose-500/"] {
+  border-top-color: rgba(255, 255, 255, 0.50) !important;
+  box-shadow: 
+    0 4px 14px -2px rgba(0, 0, 0, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+html.dark button[class*="bg-sky-500/"],
+html.dark button[class*="bg-purple-500/"],
+html.dark button[class*="bg-amber-500/"],
+html.dark button[class*="bg-emerald-500/"],
+html.dark button[class*="bg-rose-500/"] {
+  border-top-color: rgba(255, 255, 255, 0.30) !important;
+  box-shadow: 
+    0 4px 16px -2px rgba(0, 0, 0, 0.40),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.20) !important;
+}
+
+/* --- CLASE F: BOTONES CIRCULARES Y SQUIRCLES DE ICONO --- */
+button.rounded-full,
+button.rounded-xl,
+button.rounded-2xl {
+  box-shadow: 
+    0 4px 14px -2px rgba(0, 30, 77, 0.10),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+html.dark button.rounded-full,
+html.dark button.rounded-xl,
+html.dark button.rounded-2xl {
+  box-shadow: 
+    0 4px 16px -2px rgba(0, 0, 0, 0.50),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* --- REGLA DE CONTRASTE VECTORIAL: ICONOS DENTRO DE BOTONES --- */
+/* Garantiza que todos los iconos SVG dentro de botones hereden exactamente el mismo color del texto del botón */
+button svg:not(.icon-keep-color),
+button [role="img"]:not(.icon-keep-color),
+button [role="img"]:not(.icon-keep-color) svg,
+a[class*="px-"][class*="py-"] svg:not(.icon-keep-color),
+a[class*="px-"][class*="h-"] svg:not(.icon-keep-color),
+a[class*="rounded-"][class*="bg-"] svg:not(.icon-keep-color),
+[role="button"] svg:not(.icon-keep-color) {
+  color: currentColor !important;
+}
+
+/* 5. Tipografía Corporativa Oficial de Alto Contraste (Sin Degradados Artificiales en Texto) */
+.brand-corporate-gradient {
+  background: #001E4D;
+}
+
+.brand-corporate-gradient-text {
+  color: #001E4D;
+}
+
+html.dark .brand-corporate-gradient-text {
+  color: #FFFFFF;
+}
+
+.brand-accent-text {
+  color: #00DD9E;
+}
+
+/* Degradados Sutiles de Marca Neblina 105.5 FM */
+.ios-gradient-teal-subtle {
+  background: linear-gradient(135deg, rgba(0, 221, 158, 0.15) 0%, rgba(185, 235, 255, 0.08) 100%);
+}
+.ios-gradient-gold-subtle {
+  background: linear-gradient(135deg, rgba(0, 221, 158, 0.18) 0%, rgba(0, 30, 77, 0.08) 100%);
+}
+.ios-gradient-cerulean-subtle {
+  background: linear-gradient(135deg, rgba(0, 30, 77, 0.15) 0%, rgba(0, 221, 158, 0.08) 100%);
+}
+
+/* 6. Incrustaciones de Redes Sociales (Instagram, X/Twitter, Threads, YouTube, Facebook, TikTok) */
+.news-article-content .wp-block-embed {
+  margin: 1.5rem 0 !important;
+  width: 100% !important;
+}
+
+.news-article-content .wp-block-embed__wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+/* Redimensionamiento adaptable y bordes iOS para Instagram */
+.news-article-content blockquote.instagram-media,
+.news-article-content iframe.instagram-media,
+.news-article-content iframe.instagram-media-rendered {
+  width: 100% !important;
+  max-width: 540px !important;
+  min-width: unset !important;
+  margin: 1rem auto !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden !important;
+}
+
+/* Modo oscuro: suavizar el fondo del blockquote mientras carga el iframe */
+html.dark .news-article-content blockquote.instagram-media {
+  background: #001E4D !important;
+  border: 1px solid rgba(0, 221, 158, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .news-article-content blockquote.instagram-media a {
+  color: #00DD9E !important;
+}
+
+/* Twitter / X Tweet Embed */
+.news-article-content blockquote.twitter-tweet,
+.news-article-content .twitter-tweet-rendered {
+  margin: 1.5rem auto !important;
+  border-radius: 20px !important;
+  max-width: 550px !important;
+  width: 100% !important;
+}
+
+/* Enlaces e Hipervínculos dentro de Notas de Prensa */
+.news-article-content a {
+  color: #001E4D;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 700;
+  transition: opacity 0.2s ease, color 0.2s ease;
+  word-break: break-word;
+}
+
+html.dark .news-article-content a {
+  color: #00DD9E;
+}
+
+.news-article-content a:hover {
+  opacity: 0.85;
+  color: #00DD9E;
+  text-decoration-thickness: 2px;
+}
+
+/* 7. Animación Sutil y Serena para Patrocinantes y Aliados (HIG Motion Restraint) */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.anim-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 110s linear infinite;
+  will-change: transform;
+}
+
+/* Teleprompters secundarios para widgets de TV (BCV y Clima) */
+.anim-marquee-tv-bcv {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 22s linear infinite;
+  will-change: transform;
+}
+
+.anim-marquee-tv-weather {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 25s linear infinite;
+  will-change: transform;
+}
+
+.anim-marquee:hover,
+.anim-marquee:focus-within,
+.anim-marquee:active,
+.anim-marquee-tv-bcv:hover,
+.anim-marquee-tv-weather:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-marquee {
+    animation: none;
+    overflow-x: auto;
+  }
+}
+
+/* Gradientes difuminados Apple a los bordes del carrusel de logos */
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+/* 8. Animación Teleprompter de Titulares (Resorte Sutil y Estable) */
+@keyframes teleprompterSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-teleprompter {
+  animation: teleprompterSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* 8.1. Ondas Concéntricas Expansivas de la Carátula Smart TV (Hardware-Accelerated) */
+@keyframes tvCoverPulseWave {
+  0% {
+    transform: scale(0.96) translate3d(0, 0, 0);
+    opacity: 0.85;
+    box-shadow: 0 0 0 0 rgba(0, 221, 158, 0.55), inset 0 0 15px rgba(0, 221, 158, 0.3);
+  }
+  50% {
+    opacity: 0.50;
+  }
+  100% {
+    transform: scale(1.48) translate3d(0, 0, 0);
+    opacity: 0;
+    box-shadow: 0 0 35px 25px rgba(0, 221, 158, 0), inset 0 0 25px rgba(0, 221, 158, 0);
+  }
+}
+
+@keyframes tvCoverGlowBreathing {
+  0%, 100% {
+    box-shadow: 
+      0 0 30px 4px rgba(0, 221, 158, 0.45),
+      0 12px 40px -10px rgba(0, 0, 0, 0.70),
+      inset 0 1px 2px rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 221, 158, 0.75);
+  }
+  50% {
+    box-shadow: 
+      0 0 50px 10px rgba(0, 221, 158, 0.75),
+      0 16px 50px -10px rgba(0, 0, 0, 0.85),
+      inset 0 1px 2px rgba(255, 255, 255, 0.95);
+    border-color: #00DD9E;
+  }
+}
+
+.anim-tv-pulse-wave-1 {
+  animation: tvCoverPulseWave 3.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.anim-tv-pulse-wave-2 {
+  animation: tvCoverPulseWave 3.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite 1.05s;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.anim-tv-pulse-wave-3 {
+  animation: tvCoverPulseWave 3.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite 2.1s;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.anim-tv-glow-breathe {
+  animation: tvCoverGlowBreathing 2.4s ease-in-out infinite;
+  will-change: box-shadow, border-color;
+}
+
+/* 9. Animación Cajón Móvil Full-Screen (Aparición Fluida y Amortiguada) */
+@keyframes mobileDrawerIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.985) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.anim-drawer-in {
+  animation: mobileDrawerIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================================= */
+/* 10. FONDO ANIMADO OFICIAL (AROS CONIC-GRADIENT VIAJEROS & AEROGLASS)      */
+/* ========================================================================= */
+
+/* Capa profunda: Contenedor del fondo animado aislado en GPU */
+.background-animado {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+  isolation: isolate;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Envoltorios de movimiento: Controlan la trayectoria y el tamaño con aceleración GPU */
+.mover {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  filter: blur(32px);
+  opacity: 0.65;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+/* ARO 1 */
+.mover-1 {
+  top: -10%;
+  left: -10%;
+  animation: viajeEsquinas1 26s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+}
+
+/* ARO 2 */
+.mover-2 {
+  bottom: -10%;
+  right: -10%;
+  animation: viajeEsquinas2 32s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+}
+
+/* ARO 3 (Temporal/Fantasma) */
+.mover-3 {
+  top: 30%;
+  left: 40%;
+  animation: 
+    viajeEsquinas3 22s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate,
+    aparecerFantasma 16s ease-in-out infinite;
+}
+
+/* Elemento visual: Luz ambiental orgánica estilo Apple (Nebulosa Suave) */
+.aro {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 221, 158, 0.55) 0%, rgba(0, 30, 77, 0.40) 50%, transparent 75%);
+  filter: blur(36px);
+  animation: giroColor 36s linear infinite;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Pausa inteligente de aros durante desplazamiento para 120 FPS fluidos */
+body.is-scrolling .mover-1,
+body.is-scrolling .mover-2,
+body.is-scrolling .mover-3,
+body.is-scrolling .aro {
+  animation-play-state: paused !important;
+}
+
+/* Capa frontal: El panel Aeroglass / Glassmorfismo ADAPTATIVO */
+.panel-aeroglass {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 800px; /* Ensanchado para computadoras */
+  height: auto;     /* Adaptativo: crece con el contenido */
+  min-height: 250px;
+  padding: 40px;    /* Espacio interno para que el contenido no pegue a los bordes */
+  box-sizing: border-box;
+  margin: 10vh auto; /* Centrado en pantalla con margen superior e inferior */
+  background: rgba(255, 255, 255, 0.4); /* Blanco casi transparente */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.7); /* Reflejo sutil del borde */
+  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0, 30, 77, 0.15);
+  max-height: 80vh;  /* Evita que desborde la pantalla si hay texto excesivo */
+  overflow-y: auto;  /* Habilita scroll interno si es necesario */
+}
+
+html.dark .panel-aeroglass {
+  background: rgba(0, 30, 77, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* --- DEFINICIÓN DE ANIMACIONES COMPUESTAS POR GPU --- */
+
+/* Rotación infinita del degradado a velocidad serena Apple */
+@keyframes giroColor {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Opacidad del tercer aro para que aparezca y desaparezca */
+@keyframes aparecerFantasma {
+  0%, 20% { opacity: 0; }
+  45%, 65% { opacity: 0.65; }
+  85%, 100% { opacity: 0; }
+}
+
+/* Trayectorias con hardware 3D compositing */
+@keyframes viajeEsquinas1 {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(55vw, 25vh, 0) scale(0.65); }
+  66% { transform: translate3d(18vw, 65vh, 0) scale(1.15); }
+  100% { transform: translate3d(75vw, 85vh, 0) scale(0.8); }
+}
+
+@keyframes viajeEsquinas2 {
+  0% { transform: translate3d(0, 0, 0) scale(1.1); }
+  33% { transform: translate3d(-45vw, -35vh, 0) scale(0.6); }
+  66% { transform: translate3d(-75vw, -18vh, 0) scale(1.2); }
+  100% { transform: translate3d(-25vw, -75vh, 0) scale(0.5); }
+}
+
+@keyframes viajeEsquinas3 {
+  0% { transform: translate3d(0, 0, 0) scale(0.6); }
+  50% { transform: translate3d(35vw, -25vh, 0) scale(1.25); }
+  100% { transform: translate3d(-25vw, 18vh, 0) scale(0.85); }
+}
+
+/* Ajustes de escala para pantallas móviles */
+@media (max-width: 768px) {
+  .mover {
+    width: 260px;
+    height: 260px;
+    filter: blur(24px); 
+    opacity: 0.55;
+  }
+  .panel-aeroglass {
+    margin: 15vh auto;
+    border-radius: 14px;
+    padding: 25px;
+  }
+}
+
+/* Respeto a Accesibilidad de Movimiento Reducido (Apple HIG › motion.md & accessibility.md) */
+@media (prefers-reduced-motion: reduce) {
+  .mover-1,
+  .mover-2,
+  .mover-3,
+  .aro {
+    animation: none !important;
+  }
+  .mover-1 {
+    transform: translate3d(15vw, 15vh, 0) scale(0.8);
+  }
+  .mover-2 {
+    transform: translate3d(-15vw, -15vh, 0) scale(0.9);
+  }
+  .mover-3 {
+    opacity: 0.35 !important;
+    transform: translate3d(0, 0, 0) scale(0.7);
+  }
+  button:hover:not(:disabled):not(.no-hover-lift),
+  [role="button"]:hover:not(:disabled):not(.no-hover-lift),
+  .aeroglass-btn:hover:not(:disabled),
+  .aeroglass-card:hover,
+  .glass-card:hover {
+    transform: none !important;
+  }
+}
+
+/* ========================================================================= */
+/* 10.5. ACCESIBILIDAD APPLE HIG: TRANSPARENCIA REDUCIDA, ALTO CONTRASTE,    */
+/*       FOCUS RING VISIBLE Y ESCALA TIPOGRÁFICA MÍNIMA LEGIBLE (11px+)      */
+/* ========================================================================= */
+
+/* Elevación automática de micro-textos (< 11px) al mínimo legible de Apple HIG (11pt / 11px) */
+.text-\[8px\],
+.text-\[9px\],
+.text-\[10px\] {
+  font-size: 0.6875rem !important; /* 11px mínimo según typography.md › Best practices */
+  line-height: 1.35 !important;
+}
+
+/* Números tabulares en contadores, divisas BCV, relojes y estadísticas (typography.md) */
+.tabular-nums,
+input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Indicador de Foco por Teclado Visible (accessibility.md › Keyboard navigation) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #00DD9E !important;
+  outline-offset: 2px !important;
+}
+
+/* Respeto a Preferencia de Transparencia Reducida (liquid-glass.md & accessibility.md › Blur and transparency) */
+@media (prefers-reduced-transparency: reduce) {
+  html.dark .aeroglass-nav,
+  html.dark .aeroglass-card,
+  html.dark .glass-card,
+  html.dark .aeroglass-panel,
+  html.dark .glass-panel,
+  html.dark .panel-aeroglass {
+    background: #00183D !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: rgba(255, 255, 255, 0.28) !important;
+  }
+
+  html.light .aeroglass-nav,
+  html.light .aeroglass-card,
+  html.light .glass-card,
+  html.light .aeroglass-panel,
+  html.light .glass-panel,
+  html.light .panel-aeroglass {
+    background: #FFFFFF !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: rgba(0, 30, 77, 0.22) !important;
+  }
+}
+
+/* Respeto a Preferencia de Mayor Contraste (color.md & accessibility.md › Color and effects) */
+@media (prefers-contrast: more) {
+  html.dark .aeroglass-nav,
+  html.dark .aeroglass-card,
+  html.dark .glass-card,
+  html.dark .aeroglass-panel,
+  html.dark .glass-panel {
+    border-color: rgba(0, 221, 158, 0.55) !important;
+  }
+
+  html.light .aeroglass-nav,
+  html.light .aeroglass-card,
+  html.light .glass-card,
+  html.light .aeroglass-panel,
+  html.light .glass-panel {
+    border-color: rgba(0, 30, 77, 0.38) !important;
+  }
+}
+
+/* ========================================================================= */
+/* 11. SISTEMA DE OPTIMIZACIÓN DE RENDIMIENTO APPLE (60 / 120 FPS FLUID)     */
+/* ========================================================================= */
+
+/* Contención Inteligente de Renderizado para Secciones Fuera de Pantalla */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 400px;
+}
+
+/* Aceleración por Hardware para Elementos Dinámicos */
+.gpu-layer {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* ============================================================== */
+/* ESTILOS DE IMPRESIÓN OFICIAL PARA INFORMES PUBLICITARIOS (PDF) */
+/* ============================================================== */
+@media print {
+  /* Ocultar el resto de la web */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Mostrar exclusivamente el contenedor del informe */
+  #client-ad-report-printable,
+  #client-ad-report-printable * {
+    visibility: visible;
+  }
+
+  #client-ad-report-printable {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: auto;
+    margin: 0;
+    padding: 24px;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 999999;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+
+/* ========================================================================= */
+/* MOTION DESIGN SYSTEM: APPLE FLUID SPRINGS & HYPNOTIC AMBIENT POLISH      */
+/* Inspirado en Emil Kowalski (rapidez/propósito), Jakub Krehel (refinamiento) */
+/* y Jhey Tompkins (delight sutil en micro-interacciones)                    */
+/* ========================================================================= */
+
+:root {
+  /* Curvas de Aceleración y Resortes Físicos Apple */
+  --ease-spring-snappy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring-bouncy: cubic-bezier(0.34, 1.35, 0.64, 1);
+  --ease-ambient-drift: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  
+  --dur-micro: 180ms;
+  --dur-card: 260ms;
+  --dur-modal: 320ms;
+}
+
+/* 1. Pulsación Hipnótica Suave del Indicador 'EN VIVO' (Sin Parpadeo Brusco) */
+@keyframes liveAuraBreathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0);
+  }
+}
+
+.anim-live-breathe {
+  animation: liveAuraBreathe 2.8s var(--ease-ambient-drift) infinite;
+  will-change: transform, box-shadow;
+}
+
+/* 2. Resplandor Ambiental Hipnótico en la Barra del Reproductor (AeroGlass Glow) */
+@keyframes playerGlowDrift {
+  0%, 100% {
+    border-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 -12px 40px rgba(0, 30, 77, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.85);
+  }
+  50% {
+    border-color: rgba(0, 221, 158, 0.45);
+    box-shadow: 0 -16px 48px rgba(0, 221, 158, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.95);
+  }
+}
+
+html.dark .player-glow-drift {
+  animation: playerGlowDriftDark 6s ease-in-out infinite alternate;
+}
+
+@keyframes playerGlowDriftDark {
+  0% {
+    border-top-color: rgba(255, 255, 255, 0.20);
+    box-shadow: 0 -14px 48px rgba(0, 0, 0, 0.75), inset 0 1px 1.5px rgba(255, 255, 255, 0.22);
+  }
+  100% {
+    border-top-color: rgba(0, 221, 158, 0.40);
+    box-shadow: 0 -18px 52px rgba(0, 221, 158, 0.14), inset 0 1px 1.5px rgba(0, 221, 158, 0.35);
+  }
+}
+
+/* 3. Entrada Suave y Flotante para Tarjetas y Elementos Dinámicos */
+@keyframes cardFloatIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.anim-card-enter {
+  animation: cardFloatIn var(--dur-card) var(--ease-spring-snappy) forwards;
+  will-change: transform, opacity;
+}
+
+/* 4. Efecto Shimmer Metálico Sutil para Botones Principales */
+@keyframes subtleShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-hover {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.18) 50%, 
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.shimmer-hover:hover::after {
+  opacity: 1;
+  animation: subtleShimmer 1.8s ease-in-out infinite;
+}
+
+/* 5. Micro-Interacciones en Botones y Píldoras Táctiles */
+.btn-spring-press {
+  transition: transform var(--dur-micro) var(--ease-spring-snappy), 
+              filter var(--dur-micro) ease;
+}
+
+.btn-spring-press:active {
+  transform: scale(0.96) translate3d(0, 0, 0);
+  filter: brightness(0.95);
+}
+
+/* 6. Carátula de Canción Rotatoria con Pulso Eased (Estilo Vinilo en Reproducción) */
+@keyframes vinylBreathe {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+
+.anim-vinyl-playing {
+  animation: vinylBreathe 3.4s var(--ease-ambient-drift) infinite;
+  will-change: transform;
+}
+
+/* Respeto Obligatorio a Preferencias de Movimiento Reducido */
+@media (prefers-reduced-motion: reduce) {
+  .anim-live-breathe,
+  .player-glow-drift,
+  .anim-card-enter,
+  .shimmer-hover::after,
+  .anim-vinyl-playing {
+    animation: none !important;
+    transition: none !important;
+  }
+}

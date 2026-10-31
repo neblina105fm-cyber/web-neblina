@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- 1. Página Principal / Radio en Vivo Mérida / Transmisión HD -->
+  <url>
+    <loc>https://neblina105fm.com/</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>always</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://neblina105fm.com/icon-512.png</image:loc>
+      <image:title>Neblina Stereo 105.5 FM - Radio en Vivo Santo Domingo Mérida Venezuela</image:title>
+      <image:caption>Emisora líder de los Andes venezolanos, noticias y turismo regional</image:caption>
+    </image:image>
+  </url>
+
+  <!-- 2. Sala de Prensa y Noticias de Mérida y Venezuela -->
+  <url>
+    <loc>https://neblina105fm.com/#news</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
+  <!-- 3. Directorio de Aliados Comerciales, Negocios y Sitios Turísticos de Mérida -->
+  <url>
+    <loc>https://neblina105fm.com/#sponsors</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- 4. Cartelera de Eventos, Ferias y Turismo en Mérida y Santo Domingo -->
+  <url>
+    <loc>https://neblina105fm.com/#events</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- 5. Ranking Musical Oficial de Neblina 105.5 FM -->
+  <url>
+    <loc>https://neblina105fm.com/#ranking</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- 6. Parrilla de Programación Radial en Vivo -->
+  <url>
+    <loc>https://neblina105fm.com/#schedule</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- 7. Podcasts y Emisiones Especiales -->
+  <url>
+    <loc>https://neblina105fm.com/#podcasts</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- 8. Talentos y Locutores de Neblina Stereo -->
+  <url>
+    <loc>https://neblina105fm.com/#talents</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- 9. App Smart TV de Neblina Stereo -->
+  <url>
+    <loc>https://neblina105fm.com/#tv</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <!-- 10. Contacto y Comunidad WhatsApp -->
+  <url>
+    <loc>https://neblina105fm.com/#contact</loc>
+    <lastmod>2026-10-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+</urlset>

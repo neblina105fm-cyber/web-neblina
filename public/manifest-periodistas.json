@@ -1,0 +1,39 @@
+{
+  "id": "/?app=periodistas",
+  "name": "Neblina 105.5 · Portal Periodistas",
+  "short_name": "Portal Periodistas",
+  "description": "Sistema de Redacción y Publicación de Notas de Prensa de Neblina Stereo 105.5 FM",
+  "start_url": "/#periodistas",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#001E4D",
+  "theme_color": "#001E4D",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["news", "media", "productivity"]
+}

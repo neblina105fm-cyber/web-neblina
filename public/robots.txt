@@ -1,0 +1,46 @@
+# Robots.txt Oficial para Neblina Stereo 105.5 FM (neblina105fm.com)
+# Emisora Radial Matriz, Portal de Noticias y Directorio Turístico & Comercial de Mérida, Venezuela
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /panel
+Disallow: /api/
+Disallow: /private/
+
+# Agentes de Búsqueda e Inteligencia Artificial (AIO / GEO / RAG Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# Ubicación Oficial del Mapa de Contenidos (Sitemap XML)
+Sitemap: https://neblina105fm.com/sitemap.xml
