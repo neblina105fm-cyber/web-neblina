@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy:borrador": "node ./node_modules/vite/bin/vite.js build && git checkout staging && git add . && git commit -m \"deploy: borrador interno actualizado\" && git push origin staging && git checkout main",
+    "deploy:publico": "node ./node_modules/vite/bin/vite.js build && git checkout staging && git add . && git commit -m \"deploy: preparacion publicacion oficial\" && git push origin staging && git checkout main && git merge staging && git push origin main"
   },
   "keywords": [],
   "author": "",
