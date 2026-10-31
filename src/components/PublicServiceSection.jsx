@@ -63,23 +63,7 @@ export default function PublicServiceSection() {
   ];
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 animate-fadeIn">
-      {/* Cabecera de la Sección con Estilo Apple / Caturem */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/10 dark:bg-[#00DD9E]/15 text-emerald-800 dark:text-[#00DD9E] text-xs font-black uppercase tracking-wider border border-emerald-500/25">
-          <Emoji3D name="hands_folded" className="w-4 h-4" />
-          <span>Servicio Comunitario 105.5 FM</span>
-        </div>
-
-        <h2 className="font-display font-black text-2xl sm:text-3xl md:text-4xl text-slate-900 dark:text-white tracking-tight">
-          Servicio Público & Solidaridad
-        </h2>
-
-        <p className="max-w-2xl mx-auto text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
-          Espacio abierto y solidario de Neblina Stereo para conectar a nuestra comunidad del Municipio Cardenal Quintero y la zona andina. Casos de ayuda humanitaria, reportes de objetos extraviados y pertenencias recuperadas.
-        </p>
-      </div>
-
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-6 animate-fadeIn">
       {/* Barra de Filtros por Categoría y Buscador */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Pills de Categorías */}
