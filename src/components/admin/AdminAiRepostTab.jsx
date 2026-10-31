@@ -22,7 +22,9 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { 
-  NEWS_SOURCES, 
+  getAllNewsSources,
+  addCustomNewsSource,
+  deleteCustomNewsSource,
   FEED_CATEGORIES, 
   INITIAL_REPOST_CATALOG, 
   checkIsMunicipalPáramo,
@@ -33,9 +35,18 @@ import { saveNewsItem } from '../../services/newsData';
 import Emoji3D from '../Emoji3D';
 
 export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
+  // Lista de portales (oficiales + personalizados)
+  const [sources, setSources] = useState(() => getAllNewsSources());
+  const [isManagePortalsOpen, setIsManagePortalsOpen] = useState(false);
+  const [newPortalForm, setNewPortalForm] = useState({
+    name: '',
+    url: '',
+    domain: '',
+    logo: ''
+  });
+
   // Filtros de navegación
   const [selectedSourceId, setSelectedSourceId] = useState('all'); // 'all' | id del portal
-  const [selectedFeedCat, setSelectedFeedCat] = useState('todas'); // categoría de extracción
   const [searchTerm, setSearchTerm] = useState('');
 
   // Noticia seleccionada para preparar y repostear
@@ -66,15 +77,6 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
     if (selectedSourceId !== 'all' && item.sourceId !== selectedSourceId) {
       return false;
     }
-    // Filtro por categoría de extracción
-    if (selectedFeedCat !== 'todas') {
-      if (selectedFeedCat === 'municipales') {
-        const isMuni = item.feedCategory === 'municipales' || checkIsMunicipalPáramo(`${item.originalTitle} ${item.aiModels[0]?.title}`);
-        if (!isMuni) return false;
-      } else if (item.feedCategory !== selectedFeedCat) {
-        return false;
-      }
-    }
     // Búsqueda por texto
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase().trim();
@@ -84,6 +86,30 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
     }
     return true;
   });
+
+  // Agregar nuevo portal
+  const handleAddPortal = (e) => {
+    e.preventDefault();
+    if (!newPortalForm.name.trim() || !newPortalForm.url.trim()) {
+      alert('Por favor introduce el nombre y la URL del portal.');
+      return;
+    }
+    addCustomNewsSource(newPortalForm);
+    setSources(getAllNewsSources());
+    setNewPortalForm({ name: '', url: '', domain: '', logo: '' });
+    setIsManagePortalsOpen(false);
+    if (onShowToast) onShowToast('¡Portal agregado con éxito!');
+  };
+
+  // Eliminar portal
+  const handleDeletePortal = (portalId, portalName) => {
+    if (window.confirm(`¿Eliminar el portal "${portalName}"?`)) {
+      deleteCustomNewsSource(portalId);
+      setSources(getAllNewsSources());
+      if (selectedSourceId === portalId) setSelectedSourceId('all');
+      if (onShowToast) onShowToast(`Portal "${portalName}" eliminado.`);
+    }
+  };
 
   // Al abrir una noticia para repostear
   const handleSelectArticle = (art) => {
@@ -128,7 +154,7 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
 
     setIsPublishing(true);
 
-    const source = NEWS_SOURCES.find(s => s.id === selectedArticle.sourceId) || { name: 'Portal Digital', shortName: 'Prensa' };
+    const source = sources.find(s => s.id === selectedArticle.sourceId) || { name: 'Portal Digital', shortName: 'Prensa' };
     
     // Contenido estructurado con exactamente 3 párrafos y la cortesía oficial
     const finalContent = `
@@ -194,100 +220,173 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
     <div className="space-y-6 animate-fadeIn pb-12 transition-colors duration-300">
       
       {/* ========================================================================= */}
-      {/* CABECERA Y RESUMEN DEL SISTEMA DE REPOSTEO CON IA                         */}
-      {/* ========================================================================= */}
-      <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-r from-[#001E4D] via-[#002766] to-[#001438] text-white border border-[#00DD9E]/30 shadow-lg relative overflow-hidden">
-        {/* Aros de luz decorativa aeroglass */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-[#00DD9E]/15 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-12 w-48 h-48 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center space-x-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#00DD9E] to-emerald-400 p-0.5 shadow-md flex items-center justify-center shrink-0">
-              <div className="w-full h-full bg-[#001E4D] rounded-[14px] flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-[#00DD9E]" />
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center space-x-2 flex-wrap">
-                <h3 className="font-display font-black text-lg sm:text-xl text-white tracking-wide">
-                  Reposteo Inteligente de Prensa
-                </h3>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#00DD9E] text-[#001E4D]">
-                  3 Párrafos IA
-                </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-emerald-300 border border-white/15">
-                  Últimos 3 días (72 hrs)
-                </span>
-              </div>
-              <p className="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
-                Extracción limpia y redacción objetiva sin amarillismo de 7 medios nacionales y andinos. 
-                Cada nota cuenta con 3 modelos editoriales, selector de imágenes y botón de cortesía con enlace al portal de origen.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-2 self-stretch md:self-auto justify-end">
-            <span className="text-[11px] font-bold text-slate-300 px-3 py-1.5 rounded-xl bg-white/10 border border-white/15 whitespace-nowrap">
-              {filteredCatalog.length} notas disponibles
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
       {/* BARRA DE NAVEGACIÓN Y SELECTOR DE PORTALES EXTERNOS                       */}
       {/* ========================================================================= */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <p className="text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
-            <Globe className="w-3.5 h-3.5 text-[#00DD9E]" />
-            <span>Portales de Origen</span>
-          </p>
-          <span className="text-[11px] text-slate-400">
-            {NEWS_SOURCES.length} medios verificados
-          </span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center space-x-1.5">
+              <Globe className="w-4 h-4 text-[#00DD9E]" />
+              <span>Portales de Origen ({sources.length} medios configurados)</span>
+            </p>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+              Filtra las notas por portal o administra los portales registrados
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => setIsManagePortalsOpen(!isManagePortalsOpen)}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-white font-bold text-xs transition cursor-pointer"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-500" />
+              <span>{isManagePortalsOpen ? 'Ocultar Gestión de Portales' : 'Administrar Portales'}</span>
+            </button>
+          </div>
         </div>
 
+        {/* Panel Desplegable: Administrar y Agregar Portales */}
+        {isManagePortalsOpen && (
+          <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#19222e] border border-slate-200 dark:border-white/10 shadow-sm space-y-4 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-2.5">
+              <h4 className="font-display font-black text-xs uppercase tracking-wider text-slate-900 dark:text-white flex items-center space-x-2">
+                <Globe className="w-4 h-4 text-emerald-500" />
+                <span>Gestión de Portales Informativos</span>
+              </h4>
+              <button
+                type="button"
+                onClick={() => setIsManagePortalsOpen(false)}
+                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Formulario Agregar Portal */}
+            <form onSubmit={handleAddPortal} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre del Portal *</label>
+                <input
+                  type="text"
+                  placeholder="Ej: Diario Los Andes"
+                  value={newPortalForm.name}
+                  onChange={(e) => setNewPortalForm(prev => ({ ...prev, name: e.target.value }))}
+                  required
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white font-bold"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">URL Oficial *</label>
+                <input
+                  type="url"
+                  placeholder="https://diariolosandes.com"
+                  value={newPortalForm.url}
+                  onChange={(e) => setNewPortalForm(prev => ({ ...prev, url: e.target.value }))}
+                  required
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Dominio (Opcional)</label>
+                <input
+                  type="text"
+                  placeholder="diariolosandes.com"
+                  value={newPortalForm.domain}
+                  onChange={(e) => setNewPortalForm(prev => ({ ...prev, domain: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white font-mono"
+                />
+              </div>
+
+              <div className="flex items-end space-x-2">
+                <div className="flex-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Logo / Favicon URL</label>
+                  <input
+                    type="url"
+                    placeholder="https://.../favicon.ico"
+                    value={newPortalForm.logo}
+                    onChange={(e) => setNewPortalForm(prev => ({ ...prev, logo: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white font-mono"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs shrink-0 cursor-pointer shadow-xs"
+                >
+                  + Agregar
+                </button>
+              </div>
+            </form>
+
+            {/* Listado de Portales Personalizados */}
+            {sources.some(s => s.isCustom) && (
+              <div className="pt-2 border-t border-slate-100 dark:border-white/5 space-y-2">
+                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                  Portales Personalizados Agregados:
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {sources.filter(s => s.isCustom).map(cp => (
+                    <div key={cp.id} className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs">
+                      <span className="font-bold text-slate-800 dark:text-white">{cp.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeletePortal(cp.id, cp.name)}
+                        className="text-rose-500 hover:text-rose-700 text-xs font-bold"
+                        title="Eliminar portal"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Portales con scroll suave y estados táctiles óptimos */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1">
           {/* Opción Todos */}
           <button
             type="button"
             onClick={() => setSelectedSourceId('all')}
-            className={`p-2.5 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer active:scale-95 ${
+            className={`p-2.5 px-4 rounded-2xl border flex items-center space-x-2 text-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0 ${
               selectedSourceId === 'all'
                 ? 'bg-[#001E4D] text-[#00DD9E] border-[#00DD9E] dark:bg-[#00DD9E] dark:text-[#001E4D] shadow-md font-bold'
                 : 'bg-white/80 dark:bg-[#19222e]/80 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-white/10 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'
             }`}
           >
-            <Globe className="w-4 h-4 mb-1" />
-            <span className="text-[11px] font-bold">Todos</span>
+            <Globe className="w-4 h-4" />
+            <span className="text-xs font-bold">Todos los Portales</span>
           </button>
 
           {/* Portales individuales */}
-          {NEWS_SOURCES.map((src) => {
+          {sources.map((src) => {
             const isSelected = selectedSourceId === src.id;
             return (
               <button
                 key={src.id}
                 type="button"
                 onClick={() => setSelectedSourceId(src.id)}
-                className={`p-2 rounded-2xl border flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer active:scale-95 ${
+                className={`p-2 px-3.5 rounded-2xl border flex items-center space-x-2 text-center transition-all duration-200 cursor-pointer active:scale-95 shrink-0 ${
                   isSelected
                     ? 'bg-[#001E4D] text-[#00DD9E] border-[#00DD9E] dark:bg-[#00DD9E] dark:text-[#001E4D] shadow-md font-bold'
                     : 'bg-white/80 dark:bg-[#19222e]/80 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-white/10 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-white/5'
                 }`}
                 title={src.description}
               >
-                <img
-                  src={src.logo}
-                  alt={src.name}
-                  className="w-4 h-4 mb-1 rounded-sm object-contain"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-                <span className="text-[11px] font-bold truncate max-w-full">
-                  {src.badge}
+                {src.logo && (
+                  <img
+                    src={src.logo}
+                    alt={src.name}
+                    className="w-4 h-4 rounded-sm object-contain"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  />
+                )}
+                <span className="text-xs font-bold whitespace-nowrap">
+                  {src.badge || src.shortName || src.name}
                 </span>
               </button>
             );
@@ -295,44 +394,22 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
         </div>
       </div>
 
-      {/* ========================================================================= */}
-      {/* FILTROS POR CATEGORÍA DE EXTRACCIÓN Y BÚSQUEDA                             */}
-      {/* ========================================================================= */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        {/* Pills de Categorías de Extracción */}
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-1 flex-1">
-          {FEED_CATEGORIES.map((cat) => {
-            const isSelected = selectedFeedCat === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedFeedCat(cat.id)}
-                className={`px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap transition-all duration-180 cursor-pointer shrink-0 active:scale-95 ${
-                  isSelected
-                    ? 'bg-emerald-600 text-white dark:bg-[#00DD9E] dark:text-[#001E4D] shadow-xs'
-                    : cat.highlight
-                      ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/40 hover:bg-amber-500/25'
-                      : 'bg-white/80 dark:bg-[#19222e]/80 text-slate-600 dark:text-slate-400 border border-slate-200/80 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5'
-                }`}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Buscador Rápido con Input Apple */}
-        <div className="relative min-w-[240px]">
+      {/* Buscador Rápido con Input Apple */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Buscar nota a repostear..."
+            placeholder="Buscar en el catálogo de notas por título o tema..."
             className="w-full pl-8 pr-3 py-2 rounded-xl bg-white dark:bg-[#0c131c] border border-slate-300 dark:border-white/15 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00DD9E]/50 transition-all"
           />
         </div>
+
+        <span className="text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
+          {filteredCatalog.length} nota(s) encontradas
+        </span>
       </div>
 
       {/* ========================================================================= */}
@@ -341,7 +418,7 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
       {!selectedArticle && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4.5">
           {filteredCatalog.map((art) => {
-            const source = NEWS_SOURCES.find(s => s.id === art.sourceId) || { name: 'Portal Web', badge: 'Prensa' };
+            const source = sources.find(s => s.id === art.sourceId) || { name: 'Portal Web', badge: 'Prensa' };
             const m = art.aiModels[0];
 
             return (
@@ -430,10 +507,10 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
               </button>
               <div>
                 <span className="text-[11px] font-bold text-emerald-600 dark:text-[#00DD9E] uppercase tracking-wider block">
-                  Cortesía: {NEWS_SOURCES.find(s => s.id === selectedArticle.sourceId)?.name}
+                  Cortesía: {sources.find(s => s.id === selectedArticle.sourceId)?.name}
                 </span>
                 <h4 className="font-display font-black text-sm sm:text-base text-slate-900 dark:text-white">
-                  Preparación y Selección de Modelo Editorial con IA
+                  Vista y Edición de Nota de Prensa
                 </h4>
               </div>
             </div>
@@ -461,45 +538,6 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
                 <Send className="w-4 h-4" />
                 <span>{isPublishing ? 'Publicando...' : 'Publicar en la Web'}</span>
               </button>
-            </div>
-          </div>
-
-          {/* SELECTOR DE LOS 3 MODELOS GENERADOS POR IA */}
-          <div className="space-y-2.5">
-            <p className="text-[11px] font-black uppercase tracking-wider text-slate-400">
-              1. Elige el Modelo Editorial de Titular y Redacción (Generados por IA)
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {selectedArticle.aiModels.map((m, idx) => {
-                const isSelected = chosenModelIndex === idx;
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleSwitchModel(idx)}
-                    className={`p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between space-y-2.5 active:scale-98 ${
-                      isSelected
-                        ? 'border-emerald-500 bg-emerald-500/10 shadow-sm ring-2 ring-emerald-500/30'
-                        : 'border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 hover:border-slate-300'
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-[#00DD9E]">
-                          {m.modelName}
-                        </span>
-                        {isSelected && <CheckCheck className="w-4 h-4 text-emerald-600 dark:text-[#00DD9E]" />}
-                      </div>
-                      <p className="font-bold text-xs text-slate-900 dark:text-white line-clamp-2">
-                        {m.title}
-                      </p>
-                    </div>
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      3 párrafos · Síntesis sin amarillismo
-                    </span>
-                  </button>
-                );
-              })}
             </div>
           </div>
 
@@ -637,7 +675,7 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
 
                 {/* Botón de Cortesía Oficial con Logo del Portal */}
                 {(() => {
-                  const source = NEWS_SOURCES.find(s => s.id === selectedArticle.sourceId) || { name: 'Portal', shortName: 'Portal' };
+                  const source = sources.find(s => s.id === selectedArticle.sourceId) || { name: 'Portal', shortName: 'Portal' };
                   return (
                     <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 dark:bg-white/5 p-4 rounded-2xl">
                       <div className="flex items-center space-x-2">
@@ -651,8 +689,8 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
                         rel="noopener noreferrer"
                         className="inline-flex items-center space-x-2 px-4 py-2 rounded-xl bg-[#001E4D] dark:bg-[#00DD9E] text-white dark:text-[#001E4D] font-bold text-xs shadow-sm hover:scale-105 active:scale-95 transition-all"
                       >
-                        <img src={source.logo} alt={source.name} className="w-4 h-4 object-contain rounded-full" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
-                        <span>Leer nota original en {source.shortName}</span>
+                        {source.logo && <img src={source.logo} alt={source.name} className="w-4 h-4 object-contain rounded-full" onError={(e) => { e.currentTarget.style.display = 'none'; }} />}
+                        <span>Leer nota original en {source.shortName || source.name}</span>
                         <ExternalLink className="w-3.5 h-3.5" />
                       </a>
                     </div>

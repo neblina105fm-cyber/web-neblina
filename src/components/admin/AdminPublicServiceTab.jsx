@@ -17,7 +17,9 @@ import {
   Users, 
   FileText, 
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  Archive,
+  RotateCcw
 } from 'lucide-react';
 import Emoji3D from '../Emoji3D';
 import { 
@@ -29,6 +31,7 @@ import {
 
 export default function AdminPublicServiceTab({ onShowToast }) {
   const [items, setItems] = useState(() => getAllPublicServices());
+  const [statusFilter, setStatusFilter] = useState('active'); // 'active' | 'archived' | 'trash'
   const [categoryFilter, setCategoryFilter] = useState('all'); // 'all' | 'ayudas' | 'objetos_perdidos' | 'objetos_encontrados'
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -102,11 +105,29 @@ export default function AdminPublicServiceTab({ onShowToast }) {
     setIsFormOpen(true);
   };
 
-  const handleDelete = (id, title) => {
-    if (window.confirm(`¿Estás seguro de eliminar el caso "${title}"?`)) {
+  const handleMoveToTrash = (id, title) => {
+    setPublicServiceStatus(id, 'trashed');
+    refreshList();
+    if (onShowToast) onShowToast(`Caso "${title}" movido a la papelera`);
+  };
+
+  const handleRestore = (id, title) => {
+    setPublicServiceStatus(id, 'active');
+    refreshList();
+    if (onShowToast) onShowToast(`Caso "${title}" restaurado a casos activos`);
+  };
+
+  const handleMarkArchived = (id, title) => {
+    setPublicServiceStatus(id, 'completed');
+    refreshList();
+    if (onShowToast) onShowToast(`Caso "${title}" marcado como ATENDIDO / ARCHIVADO con éxito`);
+  };
+
+  const handleDeletePermanent = (id, title) => {
+    if (window.confirm(`¿Estás seguro de eliminar permanentemente el caso "${title}"? Esta acción no se puede deshacer.`)) {
       deletePublicServiceItem(id);
       refreshList();
-      if (onShowToast) onShowToast('Caso eliminado correctamente de Servicio Público');
+      if (onShowToast) onShowToast('Caso eliminado definitivamente');
     }
   };
 
@@ -172,6 +193,17 @@ export default function AdminPublicServiceTab({ onShowToast }) {
   };
 
   const filteredItems = items.filter(it => {
+    // Filtro por Estado (active, archived/completed, trash)
+    const isTrash = it.status === 'trashed';
+    if (statusFilter === 'trash') {
+      if (!isTrash) return false;
+    } else if (statusFilter === 'archived') {
+      if (isTrash || it.status !== 'completed') return false;
+    } else {
+      // 'active'
+      if (isTrash || it.status === 'completed') return false;
+    }
+
     const matchesCat = categoryFilter === 'all' || it.category === categoryFilter;
     const q = searchQuery.toLowerCase().trim();
     if (!q) return matchesCat;
@@ -185,72 +217,118 @@ export default function AdminPublicServiceTab({ onShowToast }) {
   return (
     <div className="space-y-6 animate-fadeIn text-slate-900 dark:text-white">
       
-      {/* Banner de Presentación */}
-      <div className="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#001E4D] via-[#002766] to-[#001438] text-white border border-[#00DD9E]/30 relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/10 text-emerald-300 text-xs font-bold border border-white/15">
-              <Emoji3D name="hands_folded" className="w-4 h-4" />
-              <span>Módulo Administrativo</span>
+      {/* Banner de Presentación Unificado y Limpio */}
+      <div className="rounded-3xl bg-white dark:bg-[#19222e] border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center space-x-2">
+              <HeartHandshake className="w-5 h-5 text-emerald-500" />
+              <h3 className="font-display font-black text-base sm:text-lg text-slate-900 dark:text-white">
+                Gestión de Servicio Público
+              </h3>
             </div>
-            <h3 className="font-display font-black text-xl sm:text-2xl text-white">
-              Gestión de Servicio Público
-            </h3>
-            <p className="text-xs text-slate-300 max-w-xl">
-              Administra publicaciones de Ayudas Médicas/Sociales, Objetos Perdidos y Objetos Encontrados. Todo se sincroniza en tiempo real con la web.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-xl">
+              Publica ayudas médicas, objetos perdidos y encontrados en Santo Domingo y el Páramo de Mérida.
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={handleOpenCreate}
-            className="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-[#00DD9E] text-[#001E4D] font-black text-xs hover:brightness-105 active:scale-95 transition cursor-pointer shrink-0"
-          >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Nuevo Caso de Servicio Público</span>
-          </button>
-        </div>
-      </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+            {/* Buscador */}
+            <div className="relative w-full sm:w-60">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar caso..."
+                className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-black/30 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#00DD9E]"
+              />
+            </div>
 
-      {/* Barra de Filtros y Búsqueda */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-        {/* Subsecciones por Categoría */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none">
-          {[
-            { id: 'all', label: 'Todos', count: items.length },
-            { id: 'ayudas', label: 'Ayudas Médicas', count: items.filter(it => it.category === 'ayudas').length },
-            { id: 'objetos_perdidos', label: 'Objetos Perdidos', count: items.filter(it => it.category === 'objetos_perdidos').length },
-            { id: 'objetos_encontrados', label: 'Objetos Encontrados', count: items.filter(it => it.category === 'objetos_encontrados').length }
-          ].map(tab => (
             <button
-              key={tab.id}
-              onClick={() => setCategoryFilter(tab.id)}
-              className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
-                categoryFilter === tab.id
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-black'
-                  : 'bg-white dark:bg-white/5 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10'
+              type="button"
+              onClick={handleOpenCreate}
+              className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-[#00DD9E] hover:opacity-95 text-slate-950 font-black text-xs transition cursor-pointer shadow-sm active:scale-95 shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              <span>+ Nuevo Caso</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Pestañas de Estado (Casos Activos, Casos Atendidos / Archivados, Papelera) */}
+        <div className="p-3 bg-slate-50/80 dark:bg-black/20 flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 dark:border-white/5">
+          <div className="flex items-center space-x-1.5 bg-slate-200/60 dark:bg-white/5 p-1 rounded-xl">
+            <button
+              type="button"
+              onClick={() => setStatusFilter('active')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                statusFilter === 'active'
+                  ? 'bg-white dark:bg-[#001E4D] text-slate-900 dark:text-[#00DD9E] shadow-xs font-black'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <span>{tab.label}</span>
-              <span className={`text-[10px] px-1.5 py-0.2 rounded-md font-bold ${
-                categoryFilter === tab.id ? 'bg-white/20 dark:bg-black/20' : 'bg-slate-200 dark:bg-white/10'
-              }`}>
-                {tab.count}
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Casos Activos</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-white/10 font-bold">
+                {items.filter(it => it.status !== 'trashed' && it.status !== 'completed').length}
               </span>
             </button>
-          ))}
-        </div>
 
-        {/* Buscador */}
-        <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar caso..."
-            className="w-full pl-9 pr-3 py-2 rounded-xl text-xs bg-white dark:bg-black/30 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-[#00DD9E]"
-          />
+            <button
+              type="button"
+              onClick={() => setStatusFilter('archived')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                statusFilter === 'archived'
+                  ? 'bg-white dark:bg-[#001E4D] text-slate-900 dark:text-[#00DD9E] shadow-xs font-black'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Archive className="w-3.5 h-3.5" />
+              <span>Atendidos / Archivados</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-white/10 font-bold">
+                {items.filter(it => it.status === 'completed').length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setStatusFilter('trash')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                statusFilter === 'trash'
+                  ? 'bg-rose-500 text-white shadow-xs font-black'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Papelera</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-white/10 font-bold">
+                {items.filter(it => it.status === 'trashed').length}
+              </span>
+            </button>
+          </div>
+
+          {/* Subfiltro por Categoría */}
+          <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
+            {[
+              { id: 'all', label: 'Todas las Categorías' },
+              { id: 'ayudas', label: 'Ayudas Médicas' },
+              { id: 'objetos_perdidos', label: 'Perdidos' },
+              { id: 'objetos_encontrados', label: 'Encontrados' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setCategoryFilter(tab.id)}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition cursor-pointer ${
+                  categoryFilter === tab.id
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -558,23 +636,60 @@ export default function AdminPublicServiceTab({ onShowToast }) {
             </div>
 
             {/* Acciones */}
-            <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-white/5">
-              <button
-                type="button"
-                onClick={() => handleOpenEdit(item)}
-                className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-[#00DD9E] hover:text-[#001E4D] text-xs font-bold transition cursor-pointer"
-              >
-                <Edit3 className="w-3.5 h-3.5" />
-                <span>Editar</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleDelete(item.id, item.title)}
-                className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white text-xs font-bold transition cursor-pointer"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                <span>Eliminar</span>
-              </button>
+            <div className="flex flex-wrap items-center justify-end gap-1.5 pt-3 border-t border-slate-100 dark:border-white/5">
+              {statusFilter === 'trash' ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleRestore(item.id, item.title)}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500 text-emerald-700 dark:text-[#00DD9E] hover:text-[#001E4D] text-xs font-bold transition cursor-pointer"
+                    title="Restaurar a casos activos"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Restaurar</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeletePermanent(item.id, item.title)}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-600 hover:text-white text-xs font-bold transition cursor-pointer"
+                    title="Eliminar definitivamente"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Eliminar Definitivo</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  {item.status !== 'completed' && (
+                    <button
+                      type="button"
+                      onClick={() => handleMarkArchived(item.id, item.title)}
+                      className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500 text-sky-600 hover:text-white text-xs font-bold transition cursor-pointer"
+                      title="Marcar como caso atendido con éxito y archivar"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Atendido / Archivar</span>
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEdit(item)}
+                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-[#00DD9E] hover:text-[#001E4D] text-xs font-bold transition cursor-pointer"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" />
+                    <span>Editar</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMoveToTrash(item.id, item.title)}
+                    className="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white text-xs font-bold transition cursor-pointer"
+                    title="Mover a papelera"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Mover a Papelera</span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         ))}

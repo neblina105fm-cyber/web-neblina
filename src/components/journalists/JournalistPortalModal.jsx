@@ -35,7 +35,9 @@ import {
   Activity,
   Award,
   Hash,
-  Compass
+  Compass,
+  Video,
+  Trash2
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import Emoji3D from '../Emoji3D';
@@ -76,9 +78,12 @@ export default function JournalistPortalModal({ isOpen, onClose, isStandalonePag
     content: '',
     category: 'Noticias',
     image: '',
+    images: [],
+    videoUrl: '',
     socialEmbedUrl: '',
     featuredInCarousel: true
   });
+  const [extraImageUrl, setExtraImageUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
@@ -197,6 +202,51 @@ export default function JournalistPortalModal({ isOpen, onClose, isStandalonePag
     setSession(null);
   };
 
+  // Manejar subida de archivo para foto principal
+  const handleMainPhotoFile = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setNoteForm(prev => ({ ...prev, image: ev.target?.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Manejar subida de archivo para foto adicional
+  const handleExtraPhotoFile = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataUrl = ev.target?.result;
+        if (dataUrl) {
+          setNoteForm(prev => ({ ...prev, images: [...(prev.images || []), dataUrl] }));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Agregar foto adicional vía URL
+  const handleAddExtraImageUrl = () => {
+    if (!extraImageUrl.trim()) return;
+    setNoteForm(prev => ({
+      ...prev,
+      images: [...(prev.images || []), extraImageUrl.trim()]
+    }));
+    setExtraImageUrl('');
+  };
+
+  // Eliminar foto adicional
+  const handleRemoveExtraImage = (indexToRemove) => {
+    setNoteForm(prev => ({
+      ...prev,
+      images: (prev.images || []).filter((_, idx) => idx !== indexToRemove)
+    }));
+  };
+
   const handleSubmitNote = (e) => {
     e.preventDefault();
     if (!noteForm.title.trim() || !noteForm.content.trim()) {
@@ -213,8 +263,18 @@ export default function JournalistPortalModal({ isOpen, onClose, isStandalonePag
         finalContent += `\n\n<p>${socialUrl}</p>`;
       }
 
+      // Preparar consolidado de imágenes: [fotoPrincipal, ...fotosAdicionales]
+      const mainImg = (noteForm.image || '').trim();
+      const extraImgs = Array.isArray(noteForm.images) 
+        ? noteForm.images.filter(img => typeof img === 'string' && img.trim().length > 0)
+        : [];
+      const consolidatedImages = mainImg ? [mainImg, ...extraImgs] : extraImgs;
+
       const noteToSave = {
         ...noteForm,
+        image: mainImg || consolidatedImages[0] || '',
+        images: consolidatedImages,
+        videoUrl: (noteForm.videoUrl || '').trim(),
         content: finalContent,
         status: 'published' // Publicación directa autorizada
       };
@@ -227,9 +287,12 @@ export default function JournalistPortalModal({ isOpen, onClose, isStandalonePag
         content: '',
         category: 'Noticias',
         image: '',
+        images: [],
+        videoUrl: '',
         socialEmbedUrl: '',
         featuredInCarousel: true
       });
+      setExtraImageUrl('');
       setTimeout(() => {
         setSubmitSuccess(false);
         setActiveTab('mis_notas');
@@ -839,17 +902,115 @@ export default function JournalistPortalModal({ isOpen, onClose, isStandalonePag
                     </div>
 
                     <div>
-                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        URL de la Fotografía Principal
-                      </label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="block font-bold text-slate-700 dark:text-slate-300">
+                          Fotografía Principal (Portada) *
+                        </label>
+                        <label className="inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-600 dark:text-[#00DD9E] cursor-pointer hover:underline">
+                          <Upload className="w-3 h-3" />
+                          <span>Subir archivo</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleMainPhotoFile}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
                       <input
                         type="text"
                         value={noteForm.image}
                         onChange={e => setNoteForm(prev => ({ ...prev, image: e.target.value }))}
-                        placeholder="https://ejemplo.com/foto.jpg"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/15 text-slate-900 dark:text-white"
+                        placeholder="https://ejemplo.com/foto-principal.jpg o sube archivo"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/15 text-slate-900 dark:text-white text-xs font-mono"
                       />
                     </div>
+                  </div>
+
+                  {/* VISTA PREVIA Y GESTIÓN DE FOTOGRAFÍAS ADICIONALES DEL EVENTO / SUCESO */}
+                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-black/20 border border-slate-200 dark:border-white/10 space-y-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                      <div>
+                        <div className="flex items-center space-x-1.5 font-bold text-slate-800 dark:text-slate-200">
+                          <ImageIcon className="w-4 h-4 text-emerald-500" />
+                          <span>Galería de Fotografías Adicionales del Hecho ({(noteForm.images || []).length})</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                          Agrega fotos complementarias del accidente, evento o lugar para que se muestren en el carrusel interactivo
+                        </p>
+                      </div>
+
+                      <label className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-[#00DD9E] border border-emerald-500/30 text-xs font-bold cursor-pointer hover:bg-emerald-500/25 transition self-start sm:self-auto shrink-0">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>+ Subir Foto Local</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleExtraPhotoFile}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+
+                    {/* Input para agregar por URL */}
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="url"
+                        value={extraImageUrl}
+                        onChange={(e) => setExtraImageUrl(e.target.value)}
+                        placeholder="O pega URL de foto adicional (https://...)"
+                        className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-black/40 border border-slate-300 dark:border-white/15 text-slate-900 dark:text-white text-xs font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleAddExtraImageUrl}
+                        className="px-3.5 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs shrink-0 cursor-pointer"
+                      >
+                        + Agregar URL
+                      </button>
+                    </div>
+
+                    {/* Vistas previas en miniatura con botón de eliminar */}
+                    {Array.isArray(noteForm.images) && noteForm.images.length > 0 && (
+                      <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5 pt-1">
+                        {noteForm.images.map((imgSrc, idx) => (
+                          <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-slate-200 dark:border-white/15 bg-black group shadow-xs">
+                            <img src={imgSrc} alt="" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveExtraImage(idx)}
+                                className="p-1.5 rounded-full bg-rose-500 text-white hover:bg-rose-600 transition cursor-pointer shadow-md"
+                                title="Eliminar foto"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            <span className="absolute bottom-1 left-1 px-1.5 py-0.2 rounded bg-black/70 text-[9px] font-bold text-white">
+                              #{idx + 1}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ENLACE DE VIDEO DEL HECHO (OPCIONAL) */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <Video className="w-3.5 h-3.5 text-sky-500" />
+                        <span>Enlace de Video del Hecho (YouTube, MP4 o Streaming)</span>
+                      </label>
+                      <span className="text-[10px] text-slate-400 font-medium">Opcional</span>
+                    </div>
+                    <input
+                      type="url"
+                      value={noteForm.videoUrl || ''}
+                      onChange={e => setNoteForm(prev => ({ ...prev, videoUrl: e.target.value }))}
+                      placeholder="Ej: https://youtube.com/watch?v=... o https://ejemplo.com/video.mp4"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-black/30 border border-slate-300 dark:border-white/15 text-slate-900 dark:text-white text-xs font-mono"
+                    />
                   </div>
 
                   <div>

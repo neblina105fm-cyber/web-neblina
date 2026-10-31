@@ -110,11 +110,11 @@ export default function NewsImageCarousel({
         <span>{currentIndex + 1} / {total}</span>
       </div>
 
-      {/* Flechas de Navegación (Izquierda / Derecha) */}
+      {/* Flechas de Navegación (Izquierda / Derecha) - Siempre visibles y operativas */}
       <button
         onClick={prevSlide}
         aria-label="Foto anterior"
-        className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md text-white flex items-center justify-center transition opacity-90 sm:opacity-0 sm:group-hover:opacity-100 shadow-md cursor-pointer border border-white/20 active:scale-95"
+        className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md text-white flex items-center justify-center transition opacity-90 hover:opacity-100 shadow-lg cursor-pointer border border-white/20 active:scale-95"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -122,7 +122,7 @@ export default function NewsImageCarousel({
       <button
         onClick={nextSlide}
         aria-label="Foto siguiente"
-        className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/50 hover:bg-black/80 backdrop-blur-md text-white flex items-center justify-center transition opacity-90 sm:opacity-0 sm:group-hover:opacity-100 shadow-md cursor-pointer border border-white/20 active:scale-95"
+        className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md text-white flex items-center justify-center transition opacity-90 hover:opacity-100 shadow-lg cursor-pointer border border-white/20 active:scale-95"
       >
         <ChevronRight className="w-5 h-5" />
       </button>

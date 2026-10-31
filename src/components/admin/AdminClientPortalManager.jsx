@@ -63,7 +63,7 @@ import {
   runAutomatedPaymentNotifications,
   REQUEST_STEPS
 } from '../../services/clientPortalService';
-import { getAllClients, getAllBankProfiles } from '../../services/radioClientsService';
+import { getAllClients, saveClient, getAllBankProfiles } from '../../services/radioClientsService';
 import { getCachedBcvRates } from '../../services/bcvService';
 
 export default function AdminClientPortalManager({ onShowToast, onOpenClientPortalForClient }) {
@@ -103,6 +103,19 @@ export default function AdminClientPortalManager({ onShowToast, onOpenClientPort
     accessActive: true
   });
   const [copiedKeyId, setCopiedKeyId] = useState(null);
+
+  // Modal para registrar nuevo cliente comercial
+  const [isNewClientModalOpen, setIsNewClientModalOpen] = useState(false);
+  const [newClientData, setNewClientData] = useState({
+    businessName: '',
+    businessRif: '',
+    phone: '',
+    whatsapp: '',
+    email: '',
+    address: '',
+    username: '',
+    password: ''
+  });
 
   // Modal para anexar material publicitario (Audio, Foto, Video)
   const [isAssetModalOpen, setIsAssetModalOpen] = useState(false);
@@ -199,6 +212,57 @@ export default function AdminClientPortalManager({ onShowToast, onOpenClientPort
     });
     setIsCredModalOpen(true);
     scrollToSubpanel('cred-form-inline');
+  };
+
+  // Abrir modal de creación de cliente
+  const handleOpenCreateClient = () => {
+    setNewClientData({
+      businessName: '',
+      businessRif: '',
+      phone: '',
+      whatsapp: '',
+      email: '',
+      address: '',
+      username: '',
+      password: 'cli' + Math.floor(1000 + Math.random() * 9000)
+    });
+    setIsNewClientModalOpen(true);
+  };
+
+  // Guardar nuevo cliente comercial y asignarle credenciales inmediatas
+  const handleSaveNewClient = (e) => {
+    e.preventDefault();
+    if (!newClientData.businessName.trim()) {
+      alert('Por favor introduce el nombre del comercio o cliente.');
+      return;
+    }
+
+    const clientId = `cli_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const uName = newClientData.username.trim() || newClientData.businessName.toLowerCase().replace(/[^a-z0-9]/g, '_').substring(0, 15);
+    const uPass = newClientData.password.trim() || 'neblina105';
+
+    saveClient({
+      id: clientId,
+      businessName: newClientData.businessName.trim(),
+      businessRif: newClientData.businessRif.trim(),
+      phone: newClientData.phone.trim(),
+      whatsapp: newClientData.whatsapp.trim() || newClientData.phone.trim(),
+      email: newClientData.email.trim(),
+      address: newClientData.address.trim(),
+      adStatus: 'active',
+      status: 'active'
+    });
+
+    setClientCredentials(clientId, {
+      username: uName,
+      password: uPass,
+      accessActive: true,
+      businessName: newClientData.businessName.trim()
+    });
+
+    setIsNewClientModalOpen(false);
+    refreshAll();
+    if (onShowToast) onShowToast(`¡Cliente "${newClientData.businessName}" creado con credenciales activas!`);
   };
 
   // Guardar credenciales
@@ -414,68 +478,111 @@ export default function AdminClientPortalManager({ onShowToast, onOpenClientPort
       <audio ref={audioRef} onEnded={() => setPlayingAudioId(null)} className="hidden" />
 
       {/* ============================================================== */}
-      {/* BARRA SUPERIOR DE SUB-PESTAÑAS DEL PORTAL DE CLIENTES          */}
+      {/* TARJETA / BANNER UNIFICADO INTEGRADO SUPERIOR                  */}
       {/* ============================================================== */}
-      <div className="p-1.5 rounded-2xl bg-white dark:bg-[#19222e] border border-slate-200 dark:border-white/10 shadow-xs flex flex-wrap gap-1">
-        <button
-          onClick={() => setSubTab('accesos')}
-          className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            subTab === 'accesos'
-              ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
-              : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
-          }`}
-        >
-          <Key className="w-4 h-4" />
-          <span>Accesos & Claves ({users.length})</span>
-        </button>
+      <div className="rounded-3xl bg-white dark:bg-[#19222e] border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
+        {/* PARTE SUPERIOR: CONTROL DE ACCESOS, DESCRIPCIÓN Y BOTONES DE ACCIÓN */}
+        <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center space-x-2">
+              <Key className="w-5 h-5 text-emerald-500" />
+              <h4 className="font-display font-black text-sm sm:text-base text-slate-900 dark:text-white">
+                Control de Accesos al Portal de Clientes
+              </h4>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-2xl leading-relaxed">
+              Administre cuentas de aliados comerciales, asigne credenciales directas para su ingreso, gestione material publicitario, atienda solicitudes y coordine facturación con tasa BCV.
+            </p>
+          </div>
 
-        <button
-          onClick={() => setSubTab('material')}
-          className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            subTab === 'material'
-              ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
-              : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
-          }`}
-        >
-          <Music className="w-4 h-4" />
-          <span>Material Publicitario ({assets.length})</span>
-        </button>
+          <div className="flex items-center space-x-2 shrink-0 self-start md:self-center">
+            {/* Botón "+ Crear Nuevo Cliente" */}
+            <button
+              type="button"
+              onClick={handleOpenCreateClient}
+              className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-[#00DD9E] hover:opacity-95 text-slate-950 font-black text-xs transition cursor-pointer shadow-sm active:scale-95"
+            >
+              <Plus className="w-4 h-4" />
+              <span>+ Crear Nuevo Cliente</span>
+            </button>
 
-        <button
-          onClick={() => setSubTab('solicitudes')}
-          className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            subTab === 'solicitudes'
-              ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
-              : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
-          }`}
-        >
-          <Clock className="w-4 h-4" />
-          <span>Solicitudes & Eventos ({requests.length})</span>
-        </button>
+            {/* Botón "Abrir Portal de Aliados" */}
+            <button
+              type="button"
+              onClick={() => {
+                window.open(`${window.location.origin}${window.location.pathname}#clientes`, '_blank', 'noopener,noreferrer');
+              }}
+              className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#001E4D] text-[#00DD9E] dark:bg-[#00DD9E] dark:text-[#001E4D] text-xs font-black uppercase tracking-wider hover:brightness-105 active:scale-95 transition cursor-pointer shadow-xs whitespace-nowrap"
+              title="Abrir portal público de clientes en nueva pestaña"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Abrir Portal de Aliados</span>
+            </button>
+          </div>
+        </div>
 
-        <button
-          onClick={() => setSubTab('facturacion')}
-          className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            subTab === 'facturacion'
-              ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
-              : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          <span>Facturación ({invoices.length})</span>
-        </button>
+        {/* PARTE INFERIOR: SUB-PESTAÑAS / FILTROS INTEGRADAS */}
+        <div className="p-2 bg-slate-50/80 dark:bg-black/20 flex flex-wrap gap-1">
+          <button
+            onClick={() => setSubTab('accesos')}
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              subTab === 'accesos'
+                ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+          >
+            <Key className="w-4 h-4" />
+            <span>Accesos & Claves ({users.length})</span>
+          </button>
 
-        <button
-          onClick={() => setSubTab('mensajeria')}
-          className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            subTab === 'mensajeria'
-              ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
-              : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
-          }`}
-        >
-          <MessageSquare className="w-4 h-4" />
-          <span>Mensajería Directa ({messages.filter(m => m.sender === 'cliente' && !m.read).length} nuevos)</span>
-        </button>
+          <button
+            onClick={() => setSubTab('material')}
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              subTab === 'material'
+                ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+          >
+            <Music className="w-4 h-4" />
+            <span>Material Publicitario ({assets.length})</span>
+          </button>
+
+          <button
+            onClick={() => setSubTab('solicitudes')}
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              subTab === 'solicitudes'
+                ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+          >
+            <Clock className="w-4 h-4" />
+            <span>Solicitudes & Eventos ({requests.length})</span>
+          </button>
+
+          <button
+            onClick={() => setSubTab('facturacion')}
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              subTab === 'facturacion'
+                ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+          >
+            <FileText className="w-4 h-4" />
+            <span>Facturación ({invoices.length})</span>
+          </button>
+
+          <button
+            onClick={() => setSubTab('mensajeria')}
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              subTab === 'mensajeria'
+                ? 'bg-[#001E4D] text-[#00DD9E] shadow-sm dark:bg-[#00DD9E] dark:text-[#001E4D]'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10'
+            }`}
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Mensajería Directa ({messages.filter(m => m.sender === 'cliente' && !m.read).length} nuevos)</span>
+          </button>
+        </div>
       </div>
 
       {/* ============================================================== */}
@@ -483,6 +590,136 @@ export default function AdminClientPortalManager({ onShowToast, onOpenClientPort
       {/* ============================================================== */}
       {subTab === 'accesos' && (
         <div className="space-y-4">
+          {/* INLINE SUB-PANEL: CREAR NUEVO CLIENTE */}
+          {isNewClientModalOpen && (
+            <div id="new-client-form-inline" className="p-5 sm:p-6 rounded-2xl bg-slate-100 dark:bg-[#1c2633] border-2 border-emerald-500/40 shadow-xl space-y-4 animate-fadeIn my-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
+                <div className="flex items-center space-x-2.5">
+                  <Building2 className="w-5 h-5 text-emerald-500" />
+                  <div>
+                    <h4 className="font-display font-black text-sm sm:text-base text-slate-900 dark:text-white">
+                      Registrar Nuevo Cliente Comercial & Aliado
+                    </h4>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Crea la ficha del negocio y asígnale de inmediato su usuario y clave para ingresar al portal
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsNewClientModalOpen(false)}
+                  className="p-1 rounded-xl hover:bg-slate-200 dark:hover:bg-white/10 text-slate-500 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveNewClient} className="space-y-3.5 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="sm:col-span-2">
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre Comercial del Negocio *</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: Inversiones El Páramo C.A."
+                      value={newClientData.businessName}
+                      onChange={(e) => setNewClientData(prev => ({ ...prev, businessName: e.target.value }))}
+                      required
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">RIF o Cédula</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: J-12345678-9"
+                      value={newClientData.businessRif}
+                      onChange={(e) => setNewClientData(prev => ({ ...prev, businessRif: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Teléfono / Celular</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: 0424-7459774"
+                      value={newClientData.phone}
+                      onChange={(e) => setNewClientData(prev => ({ ...prev, phone: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">WhatsApp Comercial</label>
+                    <input
+                      type="text"
+                      placeholder="Ej: 584247459774"
+                      value={newClientData.whatsapp}
+                      onChange={(e) => setNewClientData(prev => ({ ...prev, whatsapp: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Correo Electrónico (Opcional)</label>
+                    <input
+                      type="email"
+                      placeholder="contacto@negocio.com"
+                      value={newClientData.email}
+                      onChange={(e) => setNewClientData(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-slate-200 dark:border-white/10">
+                  <p className="font-bold text-[11px] text-emerald-600 dark:text-[#00DD9E] uppercase tracking-wider mb-2">
+                    Credenciales Iniciales de Ingreso al Portal
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Usuario de Acceso</label>
+                      <input
+                        type="text"
+                        placeholder="Autogenerado o personalizado..."
+                        value={newClientData.username}
+                        onChange={(e) => setNewClientData(prev => ({ ...prev, username: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">Contraseña</label>
+                      <input
+                        type="text"
+                        placeholder="Contraseña inicial..."
+                        value={newClientData.password}
+                        onChange={(e) => setNewClientData(prev => ({ ...prev, password: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-black/30 border border-slate-300 dark:border-white/10 text-slate-800 dark:text-white font-mono font-bold"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-slate-200 dark:border-white/10 flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsNewClientModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-slate-200 dark:bg-white/10 text-slate-800 dark:text-white font-bold cursor-pointer hover:bg-slate-300"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-[#00DD9E] text-[#001E4D] font-black uppercase tracking-wider cursor-pointer shadow-sm hover:brightness-105 active:scale-95 transition"
+                  >
+                    Guardar y Activar Cliente
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* INLINE SUB-PANEL: CREAR / EDITAR CREDENCIALES */}
           {isCredModalOpen && (
             <div id="cred-form-inline" className="p-5 sm:p-6 rounded-2xl bg-slate-100 dark:bg-[#1c2633] border-2 border-emerald-500/30 shadow-xl space-y-4 animate-fadeIn my-4">
@@ -565,156 +802,159 @@ export default function AdminClientPortalManager({ onShowToast, onOpenClientPort
           )}
 
           
-          <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h4 className="font-display font-black text-sm text-slate-900 dark:text-white">
-                Control de Accesos al Portal de Clientes
-              </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300">
-                Genere usuario y clave para cualquier negocio, copie las credenciales para enviarlas por WhatsApp y active o pause la pauta.
-              </p>
-            </div>
-
-            <button
-              onClick={() => {
-                window.open(`${window.location.origin}${window.location.pathname}#clientes`, '_blank', 'noopener,noreferrer');
-              }}
-              className="px-3.5 py-2 rounded-xl bg-[#001E4D] text-[#00DD9E] dark:bg-[#00DD9E] dark:text-[#001E4D] text-xs font-black uppercase tracking-wider hover:brightness-105 active:scale-95 transition flex items-center space-x-1.5 cursor-pointer shadow-xs whitespace-nowrap self-start sm:self-auto"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span>Abrir Portal de Aliados</span>
-            </button>
-          </div>
-
           {/* Tabla de Clientes con sus Credenciales */}
-          <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#19222e]">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
-                <tr>
-                  <th className="p-3">Comercio / Cliente</th>
-                  <th className="p-3">Usuario</th>
-                  <th className="p-3">Contraseña</th>
-                  <th className="p-3">Pauta en Aire</th>
-                  <th className="p-3">Acceso Portal</th>
-                  <th className="p-3 text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-                {clients.map((client) => {
-                  const userObj = users.find(u => String(u.clientId) === String(client.id));
-                  const isAdActive = client.adStatus !== 'inactive';
-                  const isAccessActive = userObj?.accessActive !== false;
+          {clients.length === 0 ? (
+            <div className="p-10 rounded-2xl border-2 border-dashed border-slate-200 dark:border-white/10 bg-white/50 dark:bg-[#19222e]/50 text-center space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-[#00DD9E] mx-auto flex items-center justify-center">
+                <Building2 className="w-7 h-7" />
+              </div>
+              <div className="max-w-md mx-auto">
+                <h4 className="font-display font-black text-base text-slate-900 dark:text-white">
+                  No hay clientes registrados aún
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                  Comienza registrando tu primer cliente publicitario para generarle credenciales y brindarle acceso exclusivo a su portal.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={handleOpenCreateClient}
+                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-[#00DD9E] hover:opacity-95 text-slate-950 font-black text-xs transition cursor-pointer shadow-sm active:scale-95"
+              >
+                <Plus className="w-4 h-4" />
+                <span>+ Crear Primer Cliente</span>
+              </button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#19222e]">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th className="p-3">Comercio / Cliente</th>
+                    <th className="p-3">Usuario</th>
+                    <th className="p-3">Contraseña</th>
+                    <th className="p-3">Pauta en Aire</th>
+                    <th className="p-3">Acceso Portal</th>
+                    <th className="p-3 text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                  {clients.map((client) => {
+                    const userObj = users.find(u => String(u.clientId) === String(client.id));
+                    const isAdActive = client.adStatus !== 'inactive';
+                    const isAccessActive = userObj?.accessActive !== false;
 
-                  return (
-                    <tr key={client.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
-                      <td className="p-3">
-                        <div className="flex items-center space-x-2.5">
-                          <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center font-bold text-slate-800 dark:text-white flex-shrink-0">
-                            {client.businessName?.[0] || 'C'}
+                    return (
+                      <tr key={client.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition">
+                        <td className="p-3">
+                          <div className="flex items-center space-x-2.5">
+                            <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-white/10 flex items-center justify-center font-bold text-slate-800 dark:text-white flex-shrink-0">
+                              {client.businessName?.[0] || 'C'}
+                            </div>
+                            <div>
+                              <span className="font-bold text-slate-900 dark:text-white block">
+                                {client.businessName}
+                              </span>
+                              <span className="text-[11px] text-slate-400 font-mono">
+                                RIF: {client.businessRif || 'N/A'}
+                              </span>
+                            </div>
                           </div>
-                          <div>
-                            <span className="font-bold text-slate-900 dark:text-white block">
-                              {client.businessName}
-                            </span>
-                            <span className="text-[11px] text-slate-400 font-mono">
-                              RIF: {client.businessRif || 'N/A'}
-                            </span>
+                        </td>
+
+                        <td className="p-3 font-mono font-bold text-slate-700 dark:text-slate-300">
+                          {userObj?.username || <span className="text-slate-400">Sin configurar</span>}
+                        </td>
+
+                        <td className="p-3 font-mono font-bold text-emerald-600 dark:text-[#00DD9E]">
+                          {userObj?.password ? '••••••••' : <span className="text-slate-400">Sin clave</span>}
+                        </td>
+
+                        <td className="p-3">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleAdStatus(client)}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider border transition cursor-pointer ${
+                              isAdActive
+                                ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-[#00DD9E]'
+                                : 'bg-rose-500/15 border-rose-500/30 text-rose-700 dark:text-rose-400'
+                            }`}
+                            title="Haga clic para alternar pauta Activa / Inactiva"
+                          >
+                            {isAdActive ? '• Activa en Aire' : '• Pausada / Inactiva'}
+                          </button>
+                        </td>
+
+                        <td className="p-3">
+                          <span className={`px-2 py-0.5 rounded-lg text-[11px] font-bold ${
+                            isAccessActive 
+                              ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400' 
+                              : 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-400'
+                          }`}>
+                            {isAccessActive ? 'Permitido' : 'Pausado'}
+                          </span>
+                        </td>
+
+                        <td className="p-3 text-right">
+                          <div className="flex items-center justify-end space-x-1.5">
+                            {/* Copiar para WhatsApp */}
+                            <button
+                              type="button"
+                              onClick={() => handleCopyWhatsAppCredentials(client)}
+                              className="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition flex items-center space-x-1 cursor-pointer"
+                              title="Copiar credenciales formateadas para enviar por WhatsApp"
+                            >
+                              {copiedKeyId === client.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                              <span>WhatsApp</span>
+                            </button>
+
+                            {/* Configurar Clave */}
+                            <button
+                              type="button"
+                              onClick={() => handleOpenCredentials(client)}
+                              className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white transition cursor-pointer"
+                              title="Editar usuario y contraseña"
+                            >
+                              <Key className="w-3.5 h-3.5" />
+                            </button>
+
+                            {/* Abrir portal como este cliente */}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const userObj = users.find(u => String(u.clientId) === String(client.id));
+                                if (userObj) {
+                                  localStorage.setItem('neblina_client_session_auth', JSON.stringify({
+                                    clientId: client.id,
+                                    username: userObj.username,
+                                    businessName: client.businessName,
+                                    loggedInAt: new Date().toISOString()
+                                  }));
+                                  sessionStorage.setItem('neblina_client_session_auth', JSON.stringify({
+                                    clientId: client.id,
+                                    username: userObj.username,
+                                    businessName: client.businessName,
+                                    loggedInAt: new Date().toISOString()
+                                  }));
+                                  window.open(`${window.location.origin}${window.location.pathname}#clientes`, '_blank', 'noopener,noreferrer');
+                                } else {
+                                  handleOpenCredentials(client);
+                                }
+                              }}
+                              className="p-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 dark:text-[#00DD9E] transition cursor-pointer"
+                              title="Entrar al Portal como este Cliente"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
                           </div>
-                        </div>
-                      </td>
-
-                      <td className="p-3 font-mono font-bold text-slate-700 dark:text-slate-300">
-                        {userObj?.username || <span className="text-slate-400">Sin configurar</span>}
-                      </td>
-
-                      <td className="p-3 font-mono font-bold text-emerald-600 dark:text-[#00DD9E]">
-                        {userObj?.password ? '••••••••' : <span className="text-slate-400">Sin clave</span>}
-                      </td>
-
-                      <td className="p-3">
-                        <button
-                          type="button"
-                          onClick={() => handleToggleAdStatus(client)}
-                          className={`px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-wider border transition cursor-pointer ${
-                            isAdActive
-                              ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-[#00DD9E]'
-                              : 'bg-rose-500/15 border-rose-500/30 text-rose-700 dark:text-rose-400'
-                          }`}
-                          title="Haga clic para alternar pauta Activa / Inactiva"
-                        >
-                          {isAdActive ? '• Activa en Aire' : '• Pausada / Inactiva'}
-                        </button>
-                      </td>
-
-                      <td className="p-3">
-                        <span className={`px-2 py-0.5 rounded-lg text-[11px] font-bold ${
-                          isAccessActive 
-                            ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400' 
-                            : 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-400'
-                        }`}>
-                          {isAccessActive ? 'Permitido' : 'Pausado'}
-                        </span>
-                      </td>
-
-                      <td className="p-3 text-right">
-                        <div className="flex items-center justify-end space-x-1.5">
-                          {/* Copiar para WhatsApp */}
-                          <button
-                            type="button"
-                            onClick={() => handleCopyWhatsAppCredentials(client)}
-                            className="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] transition flex items-center space-x-1 cursor-pointer"
-                            title="Copiar credenciales formateadas para enviar por WhatsApp"
-                          >
-                            {copiedKeyId === client.id ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                            <span>WhatsApp</span>
-                          </button>
-
-                          {/* Configurar Clave */}
-                          <button
-                            type="button"
-                            onClick={() => handleOpenCredentials(client)}
-                            className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white transition cursor-pointer"
-                            title="Editar usuario y contraseña"
-                          >
-                            <Key className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Abrir portal como este cliente */}
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const userObj = users.find(u => String(u.clientId) === String(client.id));
-                              if (userObj) {
-                                localStorage.setItem('neblina_client_session_auth', JSON.stringify({
-                                  clientId: client.id,
-                                  username: userObj.username,
-                                  businessName: client.businessName,
-                                  loggedInAt: new Date().toISOString()
-                                }));
-                                sessionStorage.setItem('neblina_client_session_auth', JSON.stringify({
-                                  clientId: client.id,
-                                  username: userObj.username,
-                                  businessName: client.businessName,
-                                  loggedInAt: new Date().toISOString()
-                                }));
-                                window.open(`${window.location.origin}${window.location.pathname}#clientes`, '_blank', 'noopener,noreferrer');
-                              } else {
-                                handleOpenCredentials(client);
-                              }
-                            }}
-                            className="p-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-600 dark:text-[#00DD9E] transition cursor-pointer"
-                            title="Entrar al Portal como este Cliente"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
 
         </div>
       )}

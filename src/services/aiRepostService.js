@@ -92,7 +92,62 @@ export const NEWS_SOURCES = [
   }
 ];
 
-// Categorías temáticas de extracción
+const STORAGE_CUSTOM_PORTALS_KEY = 'neblina_ai_repost_portals_db';
+
+// Obtener lista completa de portales (oficiales + personalizados en localStorage)
+export function getAllNewsSources() {
+  if (typeof window === 'undefined') return NEWS_SOURCES;
+  try {
+    const raw = localStorage.getItem(STORAGE_CUSTOM_PORTALS_KEY);
+    if (raw) {
+      const custom = JSON.parse(raw);
+      if (Array.isArray(custom)) {
+        return [...NEWS_SOURCES, ...custom];
+      }
+    }
+  } catch (e) {}
+  return NEWS_SOURCES;
+}
+
+// Guardar un nuevo portal personalizado
+export function addCustomNewsSource(portalData) {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_CUSTOM_PORTALS_KEY);
+    const custom = raw ? JSON.parse(raw) : [];
+    const newPortal = {
+      id: `custom_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      name: portalData.name.trim(),
+      shortName: portalData.shortName?.trim() || portalData.name.trim(),
+      badge: portalData.badge?.trim() || portalData.name.trim().substring(0, 12),
+      url: portalData.url.trim(),
+      domain: portalData.domain?.trim() || portalData.url.replace(/^https?:\/\//, '').replace(/\/.*$/, ''),
+      logo: portalData.logo?.trim() || `${portalData.url.replace(/\/+$/, '')}/favicon.ico`,
+      color: portalData.color || '#001E4D',
+      accentColor: portalData.accentColor || '#00DD9E',
+      description: portalData.description?.trim() || 'Portal de noticias añadido por la administración.',
+      isCustom: true
+    };
+    const updated = [...custom, newPortal];
+    localStorage.setItem(STORAGE_CUSTOM_PORTALS_KEY, JSON.stringify(updated));
+    return newPortal;
+  } catch (e) {
+    return null;
+  }
+}
+
+// Eliminar un portal personalizado
+export function deleteCustomNewsSource(portalId) {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = localStorage.getItem(STORAGE_CUSTOM_PORTALS_KEY);
+    if (raw) {
+      const custom = JSON.parse(raw);
+      const updated = custom.filter(p => p.id !== portalId);
+      localStorage.setItem(STORAGE_CUSTOM_PORTALS_KEY, JSON.stringify(updated));
+    }
+  } catch (e) {}
+}
 export const FEED_CATEGORIES = [
   { id: 'todas', label: 'Todas las Notas' },
   { id: 'municipales', label: 'Municipales (Cardenal Quintero / Páramo)', highlight: true },
@@ -358,7 +413,7 @@ export const INITIAL_REPOST_CATALOG = [
     originalTitle: 'Liga Venezolana de Béisbol Profesional (LVBP) entra en una semana determinante con estadios a casa llena',
     feedCategory: 'deportes',
     suggestedCategory: 'Deportes',
-    publishedDate: '28 Oct 2026',
+    publishedDate: '30 Oct 2026',
     authorOrSource: 'El Nacional / Deportes',
     images: [
       'https://images.unsplash.com/photo-1508344928928-7165b67de128?w=1000&auto=format&fit=crop&q=80'
@@ -392,6 +447,52 @@ export const INITIAL_REPOST_CATALOG = [
           'El desarrollo del campeonato de béisbol profesional venezolano continúa registrando altos índices de sintonía y asistencia, confirmando su estatus como el pasatiempo preferido de la familia venezolana.',
           'La integración de jugadores consolidados junto a jóvenes prospectos ha enriquecido el nivel de juego y brindado un espectáculo de primer orden a lo largo de las distintas series.',
           'Los conjuntos se preparan para afrontar series cruciales de fin de semana que podrían definir las primeras plazas directas a la siguiente ronda.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'rep_art_07',
+    sourceId: '2001',
+    originalUrl: 'https://2001online.com/comunidad/operativos-de-seguridad-y-prevencion-vial-en-ejes-andinos-y-carreteras-nacionales/',
+    originalTitle: 'Cuerpos de seguridad y prevención vial despliegan dispositivos de auxilio y patrullaje en carreteras andinas',
+    feedCategory: 'sucesos',
+    suggestedCategory: 'Noticias',
+    publishedDate: '31 Oct 2026',
+    authorOrSource: 'Diario 2001 / Comunidad y Sucesos',
+    images: [
+      'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1000&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1000&auto=format&fit=crop&q=80'
+    ],
+    aiModels: [
+      {
+        modelName: 'Modelo A (Institucional & Seguridad)',
+        title: 'Despliegan operativo preventivo y puntos de auxilio vial en corredores carreteros andinos',
+        excerpt: 'Organismos de protección civil y seguridad ciudadana brindan asistencia inmediata a usuarios en rutas de montaña.',
+        paragraphs: [
+          'Efectivos de rescate, Protección Civil y cuerpos policiales activaron puntos de control y auxilio mecánico a lo largo de los principales corredores viales que conectan el estado Mérida con los llanos y el centro del país.',
+          'El dispositivo se enfoca en la verificación de documentación, revisión de sistemas de frenado en vehículos de carga pesada y orientación preventiva ante condiciones de neblina densa o pavimento mojado características de la zona.',
+          'Voceros del operativo recordaron a los conductores la importancia de mantener velocidad moderada y comunicarse a los números de emergencia de la emisora y autoridades ante cualquier contingencia mecánica.'
+        ]
+      },
+      {
+        modelName: 'Modelo B (Enfoque Comunitario)',
+        title: 'Seguridad y asistencia al conductor: Puntos de control refuerzan la tranquilidad en carreteras de la cordillera',
+        excerpt: 'La presencia de unidades de emergencia reduce incidencias viales y ofrece respaldo oportuno a turistas y residentes.',
+        paragraphs: [
+          'El reforzamiento en la vigilancia de las principales vías andinas ha generado una recepción favorable entre habitantes y conductores que transitan a diario hacia Mérida, Barinas y Táchira.',
+          'Las patrullas cuentan con paramédicos y personal capacitado para prestar primeros auxilios, inspección rápida de neumáticos y apoyo en caso de deslizamientos menores causados por las lluvias.',
+          'Las autoridades confirmaron que el despliegue permanecerá activo durante las 24 horas para garantizar el flujo seguro de personas y bienes esenciales en la región.'
+        ]
+      },
+      {
+        modelName: 'Modelo C (Síntesis Informativa)',
+        title: 'Balance positivo en seguridad vial tras implementación de corredores de auxilio en los Andes',
+        excerpt: 'Reporte oficial señala disminución en percances carreteros gracias a la labor preventiva constante.',
+        paragraphs: [
+          'Un primer balance de los dispositivos viales implementados en la zona andina arroja resultados satisfactorios en la disminución de incidencias y asistencia oportuna a usuarios con fallas mecánicas.',
+          'La articulación entre cuerpos de rescate y cuadrillas de mantenimiento permite despejar de forma expedita cualquier obstrucción en la calzada, manteniendo la conectividad regional.',
+          'Se exhorta a los transportistas y particulares a colaborar con las indicaciones en los puntos de resguardo para consolidar una cultura vial responsable.'
         ]
       }
     ]

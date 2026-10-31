@@ -13,7 +13,8 @@ import {
   User, 
   Clock, 
   MapPin, 
-  AlertCircle 
+  AlertCircle,
+  Video
 } from 'lucide-react';
 import { STATION_INFO } from '../services/api';
 import { processSocialContent } from '../utils/socialEmbedParser';
@@ -518,8 +519,32 @@ Enviado desde el Portal Informativo de Neblina Stereo 105.5 FM · Santo Domingo 
             images={post.images || (post.image ? [post.image] : [])} 
             fallbackImage={post.image}
             alt={post.title}
+            autoPlay={true}
+            autoPlayInterval={4000}
             className="h-64 sm:h-80 md:h-96"
           />
+
+          {/* Enlace o Reproductor de Video si aplica */}
+          {post.videoUrl && (
+            <div className="p-4 rounded-2xl bg-black/60 border border-white/10 space-y-2">
+              <div className="flex items-center space-x-2 text-xs font-bold text-sky-400">
+                <Video className="w-4 h-4" />
+                <span>Video del Acontecimiento</span>
+              </div>
+              {post.videoUrl.includes('youtube.com') || post.videoUrl.includes('youtu.be') ? (
+                <div className="relative aspect-video rounded-xl overflow-hidden bg-black border border-white/15">
+                  <iframe
+                    src={post.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')}
+                    title="Video del hecho"
+                    className="w-full h-full"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <video src={post.videoUrl} controls className="w-full max-h-80 rounded-xl bg-black" />
+              )}
+            </div>
+          )}
 
           {/* Cuerpo de la Noticia con Inserción No Invasiva de Banner a Mitad de Redacción */}
           {newsParts.hasMid ? (

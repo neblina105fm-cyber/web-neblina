@@ -64,7 +64,8 @@ import {
   Store,
   AlertTriangle,
   KeyRound,
-  Wrench
+  Wrench,
+  Bell
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import NewsImageCarousel from '../NewsImageCarousel';
@@ -1925,7 +1926,10 @@ export default function AdminModal({ isOpen, onClose, isStandalonePage = false }
   const publicServicesCount = getAllPublicServices().filter(it => it.status !== 'trashed').length;
   const pendingPressNotesCount = getAllPressNotes().filter(n => !n.trashed && n.status === 'in_review').length;
 
+  const totalSystemAlerts = (ytPlaylistReminder?.shouldRemind ? 1 : 0) + pendingCommentsCount + pendingPressNotesCount;
+
   const adminModules = [
+    { id: 'notifications', label: 'Notificaciones', emoji: 'bell', icon: Bell, alertCount: totalSystemAlerts },
     { id: 'clients', label: 'Clientes & Cobranzas', emoji: 'handshake', icon: UserCheck, count: clientsCount },
     { id: 'client_portal', label: 'Portal de Clientes (Aliados)', emoji: 'building', icon: Key, count: clientsCount },
     { id: 'staff_team', label: 'Equipo de Locutores y Ventas', emoji: 'headphones', icon: Mic, count: staffTeamCount },
@@ -2150,7 +2154,7 @@ export default function AdminModal({ isOpen, onClose, isStandalonePage = false }
           <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-[calc(100vh-65px)]">
             
             {/* SIDEBAR FIJO PARA MONITORES Y COMPUTADORA (LG+) */}
-            <aside className="hidden lg:flex w-72 bg-white/80 dark:bg-[#0c141f]/90 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 flex-col justify-between p-4 shrink-0 overflow-y-auto">
+            <aside className="hidden lg:flex w-72 max-h-[calc(100vh-65px)] bg-white/80 dark:bg-[#0c141f]/90 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 flex-col justify-between p-4 shrink-0 overflow-y-auto scroll-smooth overscroll-contain">
               <div className="space-y-4">
                 {/* Cabecera del Sidebar: Logo Oficial & Sistema Interno */}
                 <div className="p-3.5 rounded-2xl bg-slate-100/90 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/10 space-y-2">
@@ -2385,27 +2389,103 @@ export default function AdminModal({ isOpen, onClose, isStandalonePage = false }
                   </div>
                 }>
 
-              {/* ALERTA AUTOMÁTICA (3 DÍAS ANTES): PLAYLIST DE YOUTUBE SEMANAL SIN COLA */}
-              {ytPlaylistReminder?.shouldRemind && (
-                <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fadeIn">
-                  <div className="flex items-start space-x-3">
-                    <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider">
-                        Recordatorio Programado: Faltan {ytPlaylistReminder.daysRemaining} día(s) para el cambio de Playlist YouTube ({ytPlaylistReminder.nextSwitchFormatted})
-                      </p>
-                      <p className="text-[11px] text-amber-800/90 dark:text-amber-300/90 mt-0.5">
-                        Aún no has dejado un enlace en cola para la próxima semana en la sección de Recomendaciones del Ranking. Configúralo ahora para que el cambio se realice automáticamente.
-                      </p>
+              {/* ============================================================== */}
+              {/* TAB 0: NOTIFICACIONES & ALERTAS OPERATIVAS DEL SISTEMA */}
+              {/* ============================================================== */}
+              {activeTab === 'notifications' && (
+                <div className="space-y-6 animate-fadeIn">
+                  <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#19222e] border border-slate-200 dark:border-white/10 shadow-sm space-y-4">
+                    <div className="flex items-center space-x-3 pb-3 border-b border-slate-100 dark:border-white/5">
+                      <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                        <Bell className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="font-display font-black text-base sm:text-lg text-slate-900 dark:text-white">
+                          Centro de Notificaciones y Alertas Operativas
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                          Supervisa en tiempo real las tareas pendientes de la emisora, programación y avisos prioritarios.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* ALERTA PLAYLIST YOUTUBE */}
+                    {ytPlaylistReminder?.shouldRemind ? (
+                      <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/15 border-2 border-amber-500/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex items-start space-x-3">
+                          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-black text-amber-900 dark:text-amber-200 uppercase tracking-wider">
+                              Recordatorio Programado: Faltan {ytPlaylistReminder.daysRemaining} día(s) para el cambio de Playlist YouTube ({ytPlaylistReminder.nextSwitchFormatted})
+                            </p>
+                            <p className="text-xs text-amber-800/90 dark:text-amber-300/90 mt-1 leading-relaxed">
+                              Aún no has dejado un enlace en cola para la próxima semana en la sección de Recomendaciones del Ranking. Configúralo ahora para que el cambio se realice automáticamente.
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab('youtube_playlist')}
+                          className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 transition cursor-pointer shadow-sm active:scale-95"
+                        >
+                          Programar Playlist en Cola
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center space-x-3">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+                        <div>
+                          <p className="text-xs font-bold text-emerald-800 dark:text-[#00DD9E]">
+                            Playlist de YouTube al día
+                          </p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            La lista de reproducción semanal se encuentra activa y sin alertas de vencimiento inmediato.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* OTRAS ALERTAS OPERATIVAS */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                      <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <MessageSquare className="w-4 h-4 text-sky-500" />
+                          <div>
+                            <span className="text-xs font-bold text-slate-800 dark:text-white block">Comentarios de Prensa</span>
+                            <span className="text-[11px] text-slate-500">{pendingCommentsCount} por moderar</span>
+                          </div>
+                        </div>
+                        {pendingCommentsCount > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('comments')}
+                            className="px-3 py-1 rounded-lg bg-sky-500 text-white font-bold text-[11px]"
+                          >
+                            Revisar
+                          </button>
+                        )}
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/10 flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                          <Newspaper className="w-4 h-4 text-emerald-500" />
+                          <div>
+                            <span className="text-xs font-bold text-slate-800 dark:text-white block">Notas de Periodistas</span>
+                            <span className="text-[11px] text-slate-500">{pendingPressNotesCount} en revisión</span>
+                          </div>
+                        </div>
+                        {pendingPressNotesCount > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('journalists')}
+                            className="px-3 py-1 rounded-lg bg-emerald-500 text-slate-950 font-bold text-[11px]"
+                          >
+                            Revisar
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('schedule')}
-                    className="px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shrink-0 transition cursor-pointer shadow-xs"
-                  >
-                    Programar Playlist en Cola
-                  </button>
                 </div>
               )}
 
@@ -5730,36 +5810,76 @@ export default function AdminModal({ isOpen, onClose, isStandalonePage = false }
               {activeTab === 'events' && (
                 <div className="space-y-6 animate-fadeIn">
                   
-                  {/* PAPELERA SECCIONAL DE EVENTOS */}
-                  <SectionTrashToggle
-                    isTrashView={eventsTrashView}
-                    onToggleView={setEventsTrashView}
-                    activeCount={eventsList.filter(e => !e.trashed).length}
-                    trashCount={eventsList.filter(e => !!e.trashed).length}
-                    onEmptyTrash={handleEmptyEventsTrash}
-                    activeLabel="Eventos Activos"
-                    trashLabel="Papelera"
-                  />
+                  {/* TARJETA / BANNER UNIFICADO INTEGRADO DE EVENTOS */}
+                  <div className="rounded-3xl bg-white dark:bg-[#19222e] border border-slate-200 dark:border-white/10 shadow-sm overflow-hidden">
+                    {/* PARTE SUPERIOR: TÍTULO, DESCRIPCIÓN Y BOTÓN AGREGAR EVENTO */}
+                    <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-white/5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                      <div>
+                        <h4 className="font-display font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center space-x-2">
+                          <Calendar className="w-4 h-4 text-emerald-500" />
+                          <span>Gestión de Eventos y Cartelera Regional</span>
+                        </h4>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          Publica afiches/flyers, fechas, lugares, enlaces y datos de contacto de coordinadores para ferias y eventos.
+                        </p>
+                      </div>
 
-                  {/* BARRA SUPERIOR DE ACCIONES */}
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-50 dark:bg-[#19222e] p-3.5 rounded-2xl border border-slate-200 dark:border-white/10">
-                    <div>
-                      <h4 className="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center space-x-2">
-                        <Calendar className="w-4 h-4 text-emerald-500" />
-                        <span>Gestión de Eventos y Cartelera Regional</span>
-                      </h4>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Publica afiches/flyers, fechas, lugares, enlaces y datos de contacto de coordinadores para ferias y eventos.
-                      </p>
+                      <button
+                        onClick={handleOpenCreateEvent}
+                        className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer self-start sm:self-auto shrink-0"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span>+ Agregar Nuevo Evento</span>
+                      </button>
                     </div>
 
-                    <button
-                      onClick={handleOpenCreateEvent}
-                      className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition cursor-pointer"
-                    >
-                      <Plus className="w-4 h-4" />
-                      <span>Agregar Nuevo Evento</span>
-                    </button>
+                    {/* PARTE INFERIOR: SELECTOR DE EVENTOS ACTIVOS / PAPELERA Y VACIAR PAPELERA */}
+                    <div className="p-3 bg-slate-50/80 dark:bg-black/20 flex flex-wrap items-center justify-between gap-2.5">
+                      <div className="flex items-center space-x-1.5 bg-slate-200/60 dark:bg-white/5 p-1 rounded-xl">
+                        <button
+                          type="button"
+                          onClick={() => setEventsTrashView(false)}
+                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                            !eventsTrashView
+                              ? 'bg-white dark:bg-[#001E4D] text-slate-900 dark:text-[#00DD9E] shadow-xs font-black'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Eventos Activos</span>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-white/10 font-bold">
+                            {eventsList.filter(e => !e.trashed).length}
+                          </span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setEventsTrashView(true)}
+                          className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                            eventsTrashView
+                              ? 'bg-rose-500 text-white shadow-xs font-black'
+                              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                          }`}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Papelera</span>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-white/10 font-bold">
+                            {eventsList.filter(e => !!e.trashed).length}
+                          </span>
+                        </button>
+                      </div>
+
+                      {eventsTrashView && eventsList.filter(e => !!e.trashed).length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleEmptyEventsTrash}
+                          className="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500 text-rose-600 dark:text-rose-400 hover:text-white text-xs font-bold transition cursor-pointer border border-rose-500/30 flex items-center space-x-1.5"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Vaciar Papelera de Eventos</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* FORMULARIO DE EVENTO */}

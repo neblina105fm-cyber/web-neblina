@@ -287,6 +287,7 @@ export function publishPressNote(noteData, currentJournalist) {
       date: fullNote.date,
       image: fullNote.image,
       images: fullNote.images || (fullNote.image ? [fullNote.image] : []),
+      videoUrl: fullNote.videoUrl || '',
       status: 'published',
       featuredInCarousel: Boolean(fullNote.featuredInCarousel),
       isPressNote: true,
