@@ -33,6 +33,7 @@ import {
 import { getAllCategories } from '../../services/newsCategoriesService';
 import { saveNewsItem } from '../../services/newsData';
 import Emoji3D from '../Emoji3D';
+import NewsModal from '../NewsModal';
 
 export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
   // Lista de portales (oficiales + personalizados)
@@ -57,6 +58,7 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
 
   // Modo edición previa antes de publicar
   const [isEditing, setIsEditing] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [editableTitle, setEditableTitle] = useState('');
   const [editableParagraph1, setEditableParagraph1] = useState('');
   const [editableParagraph2, setEditableParagraph2] = useState('');
@@ -518,6 +520,16 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
             <div className="flex items-center space-x-2">
               <button
                 type="button"
+                onClick={() => setIsPreviewModalOpen(true)}
+                className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-[#001E4D] dark:bg-white text-[#00DD9E] dark:text-[#001E4D] hover:opacity-90 active:scale-95 transition cursor-pointer shadow-xs"
+                title="Ver cómo se verá publicada en la web"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Previsualizar en la Web</span>
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setIsEditing(!isEditing)}
                 className={`inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold border transition-all duration-180 active:scale-95 cursor-pointer ${
                   isEditing
@@ -721,6 +733,36 @@ export default function AdminAiRepostTab({ onShowToast, onNewsPublished }) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* MODAL DE PREVISUALIZACIÓN REAL EN LA WEB */}
+      {isPreviewModalOpen && (
+        <NewsModal
+          post={{
+            id: 'preview_repost',
+            title: editableTitle.trim() || 'Titular de la Nota de Prensa',
+            content: `
+              <p class="mb-4 text-base leading-relaxed font-normal">${editableParagraph1.trim()}</p>
+              <p class="mb-4 text-base leading-relaxed font-normal">${editableParagraph2.trim()}</p>
+              <p class="mb-6 text-base leading-relaxed font-normal">${editableParagraph3.trim()}</p>
+              <div class="my-6 p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs text-slate-500 font-semibold">Fuente Informativa:</span>
+                  <span class="text-xs font-black text-slate-800 dark:text-white">${sources.find(s => s.id === selectedArticle?.sourceId)?.name || 'Portal'}</span>
+                </div>
+                <a href="${selectedArticle?.originalUrl || '#'}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-[#001E4D] dark:bg-[#00DD9E] text-white dark:text-[#001E4D] text-xs font-black shadow-xs hover:opacity-90 transition">
+                  <span>Leer nota original en ${sources.find(s => s.id === selectedArticle?.sourceId)?.shortName || 'Portal'}</span>
+                </a>
+              </div>
+            `.trim(),
+            category: targetCategory || 'Noticias',
+            image: selectedArticle?.images?.[selectedImageIndex] || selectedArticle?.images?.[0] || '',
+            images: selectedArticle?.images || [],
+            author: `Redacción (${sources.find(s => s.id === selectedArticle?.sourceId)?.shortName || 'Prensa'})`,
+            date: new Date().toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' })
+          }}
+          onClose={() => setIsPreviewModalOpen(false)}
+        />
       )}
 
     </div>

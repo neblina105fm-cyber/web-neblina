@@ -1,0 +1,107 @@
+i-locutor	Locutor	Radio
+i-podcast	Podcast	Radio
+i-en-vivo	En vivo	Radio
+i-audifonos	Escuchar	Radio
+i-musica	Música	Radio
+i-radio	Programación	Radio
+i-senal	Señal 105.5	Radio
+i-mensaje	Mensajes de oyentes	Radio
+i-prensa	Prensa	Noticias
+i-sucesos	Sucesos	Noticias
+i-economia	Economía	Noticias
+i-deportes	Deportes	Noticias
+i-espectaculos	Espectáculos	Noticias
+i-internacionales	Internacionales	Noticias
+i-tecnologia	Tecnología	Noticias
+i-efemerides	Efemérides	Noticias
+i-calendario	Calendario	Noticias
+i-cultura	Cultura	Noticias
+i-clima	Clima	Clima
+i-lluvia	Lluvia	Clima
+i-neblina	Neblina	Clima
+i-frio	Temperatura	Clima
+i-sol	Despejado	Clima
+i-denuncia	Denuncia	Servicio
+i-alerta	Alerta	Servicio
+i-notificaciones	Notificaciones	Servicio
+i-calculadora	Calculadora	Servicio
+i-administracion	Administración	Servicio
+i-equipo	Equipo	Servicio
+i-estadisticas	Estadísticas	Servicio
+i-comercios	Comercios	Servicio
+i-factura	Facturas y pautas	Servicio
+i-redaccion	Redacción	Servicio
+i-buscar	Buscar	Servicio
+i-perfil	Perfil	Servicio
+i-movil	Móvil (Android · iOS)	Plataformas
+i-tableta	Tableta	Plataformas
+i-escritorio	Escritorio (Windows · macOS)	Plataformas
+i-terminal	Terminal (Linux)	Plataformas
+i-smart-tv	Smart TV	Plataformas
+i-web	Web	Plataformas
+i-descargar	Descargar app	Plataformas
+i-paramo	Páramo	Territorio
+i-frailejon	Frailejón	Territorio
+i-laguna	Laguna	Territorio
+i-trucha	Trucha	Territorio
+i-santo-domingo	Santo Domingo	Territorio
+i-trasandina	Carretera Trasandina	Territorio
+i-merida	Mérida	Territorio
+i-mapa	Cardenal Quintero	Territorio
+i-reproducir	Reproducir	Reproductor
+i-pausa	Pausa	Reproductor
+i-volumen	Volumen	Reproductor
+i-compartir	Compartir	Reproductor
+i-favorito	Favorito	Reproductor
+i-menu	Menú	Web
+i-cerrar	Cerrar	Web
+i-flecha	Ir / continuar	Web
+i-ranking	Ranking	Web
+i-talentos	Talentos	Web
+i-eventos	Eventos	Web
+i-aliados	Aliados	Web
+i-instalar	Instalar app	Web
+i-historial	Historial	Web
+i-sincronizar	Sincronizar	Web
+i-qr	Código QR	Web
+i-transmitir	Enviar a TV	Web
+i-comentarios	Comentarios	Web
+i-acceso	Acceso	Web
+i-candado	Privado	Web
+i-ver	Ver	Web
+i-salir	Cerrar sesión	Web
+i-subir	Subir archivo	Web
+i-correo	Correo	Web
+i-telefono	Teléfono	Web
+i-enlace	Enlace	Web
+i-filtro	Filtrar	Web
+i-dolar	Dólar	Economía
+i-euro	Euro	Economía
+i-tasa	Tasa de cambio	Economía
+i-banco	Banco · BCV	Economía
+i-consola	Cabina	Radio
+i-pedir-cancion	Pedir canción	Radio
+i-playlist	Playlist	Radio
+i-ecualizador	Ecualizador	Radio
+i-cuna	Cuña	Radio
+i-antena	Antena	Radio
+i-streaming	Streaming	Radio
+i-ultima-hora	Última hora	Noticias
+i-tendencia	Tendencia	Noticias
+i-salud	Salud	Noticias
+i-educacion	Educación	Noticias
+i-vialidad	Vialidad	Noticias
+i-servicios	Servicios públicos	Noticias
+i-transporte	Transporte	Noticias
+i-foto	Fotos	Noticias
+i-video	Video	Noticias
+i-hotel	Hotel	Turismo
+i-restaurante	Restaurante	Turismo
+i-cafe	Café	Turismo
+i-posada	Posada	Turismo
+i-las-piedras	Las Piedras	Territorio
+i-aracay	Puente de Aracay	Territorio
+i-mirador	Mirador El Cerrito	Territorio
+i-montana-fe	Montaña de la Fe	Territorio
+i-laguna-victoria	Laguna La Victoria	Territorio
+i-los-frailes	Hotel Los Frailes	Territorio

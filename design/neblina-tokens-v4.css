@@ -1,0 +1,78 @@
+/* Neblina 105.5 FM — tokens de diseño v4.0 (oct 2026) */
+:root{
+  /* Color de marca */
+  --nb-noche:#090A3D;        /* degradado; titulares de piezas, horarios */
+  --nb-destello:#20F7CE;     /* solo dentro del degradado y la estela */
+  --nb-azul-paramo:#0B244D;  /* logo plano, interfaces */
+  --nb-verde-senal:#0ADDA0;  /* acento plano: en vivo, play, foco */
+  --nb-blanco:#FFFFFF;
+  --nb-plata-1:#F2F2F2; --nb-plata-2:#E6E6E6; --nb-plata-3:#CCCCCC;
+  /* Degradados */
+  --nb-degradado:linear-gradient(120deg,#20F7CE 0%,#090A3D 29%,#21F8D2 70%,#09043A 100%);
+  --nb-degradado-chip:linear-gradient(120deg,#20F7CE 0%,#090A3D 26%,#090A3D 74%,#21F8D2 100%); /* texto encima */
+  --nb-plata:linear-gradient(135deg,#F2F2F2 0%,#CCCCCC 35%,#F2F2F2 52%,#E6E6E6 76%,#F2F2F2 100%);
+  /* Apoyo (no identidad) */
+  --nb-neblina-clara:#F2F9FD; --nb-neblina:#E3EBF5; --nb-texto:#33415A; --nb-texto-sec:#5B6A82; --nb-verde-texto:#05634A;
+  /* Tipografía */
+  --nb-f-marca:'Metro DF','Michroma',sans-serif;
+  --nb-f-texto:'Lato',system-ui,sans-serif;          /* 400 · 700 · 900 */
+  --nb-f-datos:'JetBrains Mono',ui-monospace,monospace; /* solo sistemas internos */
+  --nb-chip-tracking:.09em;
+  /* Forma */
+  --nb-r-capsula:calc(var(--h)/3);   /* chips, etiquetas, botones: radio = 1/3 del alto */
+  --nb-r-campo:14px; --nb-r-tarjeta:24px; --nb-r-vidrio:28px; --nb-r-sistema:16px; --nb-r-pildora:999px;
+  --nb-vidrio-blur:26px; --nb-vidrio-fondo:rgba(255,255,255,.42); --nb-vidrio-borde:rgba(255,255,255,.8);
+  /* Movimiento */
+  --nb-spring-standard:cubic-bezier(.22,1,.36,1);  --nb-d-standard:550ms;
+  --nb-spring-bounce:cubic-bezier(.34,1.56,.64,1); --nb-d-bounce:500ms;
+  --nb-spring-snappy:cubic-bezier(.2,.9,.25,1);    --nb-d-snappy:280ms;
+  --nb-spring-gentle:cubic-bezier(.45,0,.15,1);    --nb-d-gentle:900ms;
+  --nb-entrar:cubic-bezier(0,0,.2,1);              --nb-d-entrar:420ms;
+  --nb-salir:cubic-bezier(.4,0,1,1);               --nb-d-salir:220ms;
+  --nb-anticipacion:cubic-bezier(.68,-.6,.32,1.6); --nb-d-anticipacion:700ms;
+  --nb-elastico:linear(0, .218 2.1%, .85 6.5%, 1.118 10.8%, 1.18 13.2%, 1.168 15.8%, 1.009 25.1%, .976 28.9%, .982 35.4%, 1.002 45.6%, 1); --nb-d-elastico:900ms;
+  --nb-press-escala:.96; --nb-d-press:100ms; --nb-d-pulso:1800ms; --nb-escalonado:70ms;
+  /* Física de anillos y estela */
+  --nb-anillo-vel:50;       /* px/s, rango 40–60 */
+  --nb-anillo-nitido:1.2px; --nb-anillo-difuso:26px;
+  --nb-estela-blur:46px;    /* resortes 170 / 90 / 45 */
+
+  /* ---- v3 ---- */
+  --nb-grad-texto: linear-gradient(120deg,#20F7CE 0%,#090A3D 26%,#090A3D 74%,#21F8D2 100%); /* chips y fondos con texto */
+  --nb-verde-texto: #05634A;
+  --nb-pos-icono: 1.25em;          /* ícono = 1,25 × tamaño del texto */
+  --nb-pos-icono-aire: .5em;       /* separación ícono-texto */
+  --nb-pieza-margen: 6%;           /* margen de piezas para redes */
+  --nb-historia-zona-libre: 250px; /* arriba y abajo en 1080×1920 */
+  --nb-player-alto: 72px;
+  --nb-player-alto-movil: 64px;
+  --nb-player-ancho-max: 780px;
+  --nb-player-borde: 16px;
+  --nb-player-radio: 24px;
+  --nb-player-reserva: 110px;      /* espacio libre al final del contenido */
+  --nb-nota-ancho-max: 760px;
+  --nb-nota-radio: 28px;
+  --nb-velo: rgba(4,6,30,.5);
+  --nb-vidrio-oscuro: rgba(9,10,61,.66);
+  --nb-social-boton: 44px;
+  --nb-social-boton-min: 32px;
+  --nb-anillo-oscuro: linear-gradient(200deg,#FFFFFF 0%,#E9FFFA 30%,#7FF0D6 62%,#20F7CE 100%);
+}
+/* Equivalencias con los colores que usa hoy la web */
+/* #00DD9E -> var(--nb-verde-senal) #0ADDA0 · #001E4D -> var(--nb-azul-paramo) #0B244D (interfaz) o var(--nb-noche) #090A3D (fondos) */
+
+/* ---- v4 · programas (acento decorativo: bandas, anillos, puntos; nunca texto) ---- */
+:root{
+  --nb-acento-buena-vibra:#7E47DD;
+  --nb-acento-el-monstruo-de-la-manana:#75E12D;
+  --nb-acento-entre-el-acordeon-y-el-mariachi:#0C4D84;
+  --nb-acento-la-busetica-tropical:#CA5C16;
+  --nb-acento-la-movil-de-neblina:#FA0E18;
+  --nb-acento-noticiero-102:#D50000;
+  --nb-acento-parajes-andinos:#2E6344;
+  /* app móvil */
+  --nb-app-tabbar-ios:49px; --nb-app-tabbar-android:80px; --nb-app-mini-player:64px; --nb-app-mini-radio:20px;
+  --nb-app-play:72px; --nb-app-play-radio:24px; --nb-app-margen:16px; --nb-app-toque-min:44px;
+  --nb-firma-respaldo:.2;   /* alto de la firma = 1/5 del alto del logo del programa */
+  --nb-placa-aire:.5;       /* aire interno de la placa de patrocinante = 1/2 del alto del logo */
+}
