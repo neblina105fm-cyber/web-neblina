@@ -19,7 +19,6 @@ import TalentDetailModal from './TalentDetailModal';
 
 export default function TalentsSection() {
   const [talents, setTalents] = useState([]);
-  const [search, setSearch] = useState('');
   const [selectedTalent, setSelectedTalent] = useState(null);
 
   const loadTalents = () => {
@@ -33,78 +32,18 @@ export default function TalentsSection() {
     return () => window.removeEventListener('neblina_talents_updated', handleUpdate);
   }, []);
 
-  const filteredTalents = talents.filter(t => {
-    const term = search.toLowerCase().trim();
-    if (!term) return true;
-    return (
-      t.name.toLowerCase().includes(term) ||
-      (t.role && t.role.toLowerCase().includes(term)) ||
-      (t.showName && t.showName.toLowerCase().includes(term)) ||
-      (t.bio && t.bio.toLowerCase().includes(term))
-    );
-  });
-
   return (
     <section className="py-4 space-y-6">
       
-      {/* Cabecera Principal Inspirada en Mix Radio Locutores & Apple Media */}
-      <div className="relative rounded-2xl glass-card p-6 sm:p-10 overflow-hidden shadow-sm">
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-cyan-500/10 dark:bg-[#00DD9E]/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-teal-500/10 dark:bg-[#00DD9E]/08 blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-emerald-500/10 dark:bg-[#00DD9E]/15 text-emerald-700 dark:text-[#00DD9E] text-xs font-black uppercase tracking-wider mb-3 border border-emerald-500/20">
-              <Emoji3D name="microphone" className="w-4 h-4 inline-block" alt="Micrófono" />
-              <span>Voces & Staff Oficial</span>
-            </div>
-            
-            <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-slate-900 dark:text-white tracking-tight">
-              Nuestros Talentos
-            </h2>
-            
-            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mt-2 leading-relaxed font-medium">
-              Conoce a los locutores, periodistas, animadores y DJs que le dan vida y ritmo a cada momento en <strong>Neblina Stereo 105.5 FM</strong> desde Santo Domingo para todo el Páramo merideño.
-            </p>
-          </div>
-
-          {/* Barra de Búsqueda Rápida */}
-          <div className="relative w-full md:w-72">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar locutor o programa..."
-              className="w-full pl-9 pr-8 py-2.5 rounded-full text-xs bg-slate-100/90 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00DD9E]/40 transition"
-            />
-            {search && (
-              <button 
-                onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
       {/* Grid de Talentos con Formato de Tarjetas Apple Glass Squircle */}
-      {filteredTalents.length === 0 ? (
+      {talents.length === 0 ? (
         <div className="rounded-2xl glass-card p-12 text-center text-slate-500 dark:text-slate-400 space-y-3">
           <Mic className="w-10 h-10 mx-auto text-slate-400 opacity-60" />
-          <p className="text-base font-bold">No se encontraron locutores que coincidan con la búsqueda.</p>
-          <button 
-            onClick={() => setSearch('')}
-            className="text-xs text-[#0066cc] dark:text-[#00DD9E] font-semibold underline cursor-pointer"
-          >
-            Ver todos los talentos
-          </button>
+          <p className="text-base font-bold">No hay talentos registrados actualmente.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTalents.map((talent) => (
+          {talents.map((talent) => (
             <article 
               key={talent.id}
               className="group rounded-2xl glass-card overflow-hidden border border-slate-200/90 dark:border-white/10 hover:border-emerald-500/40 dark:hover:border-[#00DD9E]/40 transition-all duration-300 shadow-sm flex flex-col justify-between"

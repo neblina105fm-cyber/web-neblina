@@ -29,6 +29,7 @@ import { getAllJournalists, getAllPressNotes } from '../services/journalistsServ
 import NewsModal from './NewsModal';
 import Emoji3D from './Emoji3D';
 import NewsGridAdSlot from './NewsGridAdSlot';
+import TickerCategories from './TickerCategories';
 
 export default function NewsSection({ isHome = false, limit = 9, onSeeAllNews }) {
   // Paginación y Filtrado Oficial de WordPress (neblina105fm.com)
@@ -366,40 +367,18 @@ export default function NewsSection({ isHome = false, limit = 9, onSeeAllNews })
               )}
             </div>
 
-            {/* Categorías Oficiales de WordPress en Pills Desplazables */}
+            {/* Categorías Oficiales de WordPress en Teleprómpter Continuo */}
             <div className="w-full">
-              {/* Categorías Oficiales sin sombras pesadas, con bordes limpios y fluidos */}
-              <div className="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none w-full">
-                {categories.map((cat) => {
-                  const isSelected = selectedCategoryId === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => {
-                        setSelectedCategoryId(cat.id);
-                        setCurrentPage(1);
-                      }}
-                      className={`shrink-0 flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer border ${
-                        isSelected
-                          ? 'bg-[#001E4D] text-[#00DD9E] dark:bg-[#00DD9E] dark:text-[#001E4D] border-[#001E4D] dark:border-[#00DD9E]'
-                          : 'bg-white/80 dark:bg-[#001E4D]/40 text-slate-700 dark:text-slate-300 hover:text-[#001E4D] dark:hover:text-[#00DD9E] border-slate-200/80 dark:border-white/10 hover:border-slate-300'
-                      }`}
-                    >
-                      {cat.isPressCategory && <Feather className="w-3.5 h-3.5" />}
-                      <span>{cat.name}</span>
-                      {cat.count !== undefined && (
-                        <span className={`text-[11px] px-1.5 py-0.2 rounded-lg font-bold ${
-                          isSelected 
-                            ? 'bg-white/20 text-[#00DD9E] dark:bg-[#001E4D]/20 dark:text-[#001E4D]' 
-                            : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
-                        }`}>
-                          {cat.count}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+              <TickerCategories
+                items={categories}
+                selectedId={selectedCategoryId}
+                onSelect={(catId) => {
+                  setSelectedCategoryId(catId);
+                  setCurrentPage(1);
+                }}
+                renderIcon={(cat) => cat.isPressCategory ? <Feather className="w-3.5 h-3.5" /> : null}
+                speed={28}
+              />
             </div>
           </div>
         )}

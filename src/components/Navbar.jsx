@@ -119,15 +119,15 @@ export default function Navbar({ activeTab, setActiveTab }) {
   return (
     <>
       {/* Cabecera Superpuesta Aeroglass Estilo Apple macOS / iOS */}
-      <header className="sticky 2xl:fixed top-0 left-0 right-0 z-50 w-full aeroglass-nav border-x-0 border-t-0 border-b border-slate-200/70 dark:border-white/10 transition-colors duration-300">
-        <div className="w-full max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
+      <header className="sticky top-0 left-0 right-0 z-50 w-full aeroglass-nav border-x-0 border-t-0 border-b border-slate-200/70 dark:border-white/10 transition-colors duration-300">
+        <div className="w-full max-w-[1700px] mx-auto px-3.5 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
             
             {/* ========================================================================= */}
-            {/* 1. VISTA MÓVIL Y TABLET VERTICAL (< 2xl: Menú Hamburguesa Simétrico)      */}
-            {/* En resoluciones menores a 2xl (1536px), se muestra esta barra limpia      */}
+            {/* 1. VISTA MÓVIL Y TABLET VERTICAL (< xl: Menú Hamburguesa Simétrico)       */}
+            {/* En resoluciones menores a xl (1280px), se muestra esta barra limpia       */}
             {/* para evitar que las 9 secciones colapsen o choquen entre sí.              */}
             {/* ========================================================================= */}
-            <div className="flex 2xl:hidden items-center justify-between h-full w-full">
+            <div className="flex xl:hidden items-center justify-between h-full w-full">
               
               {/* Columna Izquierda: Botón Circular de Menú con Pill "Secciones" */}
               <button
@@ -184,28 +184,28 @@ export default function Navbar({ activeTab, setActiveTab }) {
             </div>
 
             {/* ========================================================================= */}
-            {/* 2. VISTA ESCRITORIO COMPLETA (2XL+: MONITORES AMPLIOS >= 1536px)          */}
-            {/* Permite disfrutar de todas las pestañas extendidas con holgura.          */}
+            {/* 2. VISTA ESCRITORIO COMPLETA (XL+: MONITORES >= 1280px)                   */}
+            {/* Permite disfrutar de todas las pestañas extendidas con holgura y sin solapamiento. */}
             {/* ========================================================================= */}
-            <div className="hidden 2xl:flex items-center justify-between h-full w-full gap-4">
+            <div className="hidden xl:flex items-center justify-between h-full w-full gap-2 lg:gap-4">
               
               {/* Logo Oficial Neblina 105.5 FM */}
               <div 
-                className="relative flex items-center cursor-pointer py-1 select-none flex-shrink-0 mr-6 xl:mr-10 active:scale-95 transition-transform duration-150" 
+                className="relative flex items-center cursor-pointer py-1 select-none shrink-0 mr-2 xl:mr-4 active:scale-95 transition-transform duration-150" 
                 onClick={() => { setActiveTab('live'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                 title="Neblina Stereo 105.5 FM - Inicio"
               >
                 <img 
                   src="./logo-tight.svg" 
                   alt="Neblina Stereo 105.5 FM" 
-                  width="170"
-                  height="46"
-                  className="h-11 sm:h-12 xl:h-13 w-auto object-contain relative z-10 transition-transform duration-200"
+                  width="150"
+                  height="40"
+                  className="h-9 xl:h-10 2xl:h-11 w-auto object-contain relative z-10 transition-transform duration-200"
                 />
               </div>
 
               {/* Menú de Navegación Desktop */}
-              <nav className="flex items-center gap-1 xl:gap-1.5 justify-center min-w-0 flex-1 px-4">
+              <nav className="flex items-center gap-0.5 xl:gap-1 justify-center shrink min-w-0 px-1">
                 {allNavItems.map((item) => {
                   const isActive = activeTab === item.id;
                   return (
@@ -213,7 +213,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
                       aria-current={isActive ? 'page' : undefined}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 ${
+                      className={`px-2.5 2xl:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer whitespace-nowrap active:scale-95 shrink-0 ${
                         isActive
                           ? 'bg-[#001E4D]/85 dark:bg-[#00DD9E]/20 text-white dark:text-[#00DD9E] backdrop-blur-md border border-[#001E4D]/30 dark:border-[#00DD9E]/40 font-bold shadow-xs'
                           : 'text-slate-700 dark:text-white/85 hover:text-[#001E4D] dark:hover:text-[#00DD9E] hover:bg-black/5 dark:hover:bg-white/10'
@@ -226,7 +226,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
               </nav>
 
               {/* Lado Derecho Desktop: Tema · Cabina · Portal para Aliados · Instalar App */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-1.5 2xl:gap-2 shrink-0">
 
                 {/* Botón de elección del tema */}
                 <button
@@ -282,15 +282,12 @@ export default function Navbar({ activeTab, setActiveTab }) {
         </div>
       </header>
 
-      {/* Espaciador en escritorio ancho (2xl) para compensar el header fijo */}
-      <div className="hidden 2xl:block h-16" aria-hidden="true" />
-
       {/* ========================================================================= */}
       {/* 3. CAJÓN DE MENÚ MÓVIL DESPLEGABLE (PANTALLA COMPLETA ESTILO APPLE)        */}
       {/* ========================================================================= */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 z-[100] 2xl:hidden flex flex-col bg-white/98 dark:bg-[#001E4D]/98 backdrop-blur-2xl anim-drawer-in overflow-y-auto h-[100dvh] w-full"
+          className="fixed inset-0 z-[100] xl:hidden flex flex-col bg-white/98 dark:bg-[#001E4D]/98 backdrop-blur-2xl anim-drawer-in overflow-y-auto h-[100dvh] w-full"
           role="dialog"
           aria-modal="true"
           aria-label="Menú de Navegación"

@@ -24,6 +24,7 @@ import {
 import Emoji3D from './Emoji3D';
 import { STATION_INFO } from '../services/api';
 import SponsorDetailModal from './SponsorDetailModal';
+import TickerCategories from './TickerCategories';
 
 const InstagramIcon = ({ className }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -108,36 +109,18 @@ export default function SponsorsDirectorySection({ onOpenAdmin }) {
           )}
         </div>
 
-        {/* Carril de Pills de Categorías (Inspirado en Caturem) */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none justify-start sm:justify-center px-1">
-          {SPONSOR_CATEGORIES.map((category) => {
-            const count = category === 'Todas' 
-              ? sponsors.length 
-              : (categoriesCount[category] || 0);
-
-            const isSelected = selectedCategory === category;
-
-            return (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-lg text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer flex items-center space-x-1.5 ${
-                  isSelected
-                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm scale-105'
-                    : 'bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10'
-                }`}
-              >
-                <span>{category}</span>
-                <span className={`text-[11px] px-1.5 py-0.5 rounded-lg ${
-                  isSelected 
-                    ? 'bg-white/20 text-white dark:bg-black/10 dark:text-slate-900 font-black' 
-                    : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400'
-                }`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
+        {/* Carril de Categorías en Teleprómpter Continuo */}
+        <div className="w-full">
+          <TickerCategories
+            items={SPONSOR_CATEGORIES.map(category => ({
+              id: category,
+              name: category,
+              count: category === 'Todas' ? sponsors.length : (categoriesCount[category] || 0)
+            }))}
+            selectedId={selectedCategory}
+            onSelect={(catId) => setSelectedCategory(catId)}
+            speed={28}
+          />
         </div>
 
       </div>

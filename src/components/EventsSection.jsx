@@ -19,6 +19,7 @@ import {
 import Emoji3D from './Emoji3D';
 import { getActiveEvents, EVENT_CATEGORIES } from '../services/eventsData';
 import EventDetailModal from './EventDetailModal';
+import TickerCategories from './TickerCategories';
 
 function formatCalendarDate(dateString) {
   try {
@@ -82,69 +83,36 @@ export default function EventsSection() {
   });
 
   return (
-    <section className="py-4 space-y-6">
+    <section className="py-4 space-y-5">
       
-      {/* 1. Cabecera Inspirada en CATUREM Eventos y Apple UI */}
-      <div className="relative rounded-2xl glass-card p-6 sm:p-10 overflow-hidden shadow-sm">
-        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-emerald-500/10 dark:bg-[#00DD9E]/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-amber-500/10 dark:bg-[#FEDC01]/08 blur-3xl pointer-events-none" />
+      {/* 1. Categorías en Teleprómpter Continuo */}
+      <div className="w-full">
+        <TickerCategories 
+          items={EVENT_CATEGORIES}
+          selectedId={selectedCategory}
+          onSelect={(cat) => setSelectedCategory(cat)}
+          speed={26}
+        />
+      </div>
 
-        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-emerald-500/10 dark:bg-[#00DD9E]/15 text-emerald-700 dark:text-[#00DD9E] text-xs font-black uppercase tracking-wider mb-3 border border-emerald-500/20">
-              <Emoji3D name="calendar" className="w-4 h-4 inline-block" alt="Cartelera" />
-              <span>Cartelera Oficial & Agenda Regional</span>
-            </div>
-
-            <h2 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl text-slate-900 dark:text-white tracking-tight">
-              Eventos en Santo Domingo & Mérida
-            </h2>
-
-            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mt-2 leading-relaxed font-medium">
-              Descubre las ferias patronales, festivales gastronómicos, competencias deportivas y eventos culturales que hacen vibrar al Páramo andino. Promovido junto a <strong>CATUREM</strong> y la señal de <strong>Neblina 105.5 FM</strong>.
-            </p>
-          </div>
-
-          {/* Buscador Rápido de Eventos */}
-          <div className="relative w-full md:w-72">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar evento, lugar o fecha..."
-              className="w-full pl-9 pr-8 py-2.5 rounded-full text-xs bg-slate-100/90 dark:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00DD9E]/40 transition"
-            />
-            {searchTerm && (
-              <button 
-                onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* 2. Filtros de Categorías */}
-        <div className="relative z-10 flex items-center space-x-2 overflow-x-auto scrollbar-none pt-6 mt-6 border-t border-slate-200/80 dark:border-white/10">
-          {EVENT_CATEGORIES.map((cat) => {
-            const isSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer border ${
-                  isSelected
-                    ? 'bg-[#00DD9E] text-[#001E4D] border-white/60 font-bold shadow-sm'
-                    : 'aeroglass-subcard text-slate-700 dark:text-slate-300 border-white/20 dark:border-white/10 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
+      {/* 2. Buscador Rápido de Eventos debajo de las Categorías */}
+      <div className="relative max-w-xl mx-auto">
+        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <input 
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar evento, lugar o fecha..."
+          className="w-full pl-9 pr-8 py-2.5 rounded-2xl text-xs bg-white dark:bg-[#001438] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#00DD9E]/40 shadow-xs transition"
+        />
+        {searchTerm && (
+          <button 
+            onClick={() => setSearchTerm('')}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
 
       {/* 3. Grid de Eventos */}
