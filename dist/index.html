@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+  <head>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('neblina_theme');
+          var manual = localStorage.getItem('neblina_theme_manual');
+          var isDark = true;
+          if (manual && (saved === 'dark' || saved === 'light')) {
+            isDark = (saved === 'dark');
+          } else if (window.matchMedia) {
+            isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          }
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          } else {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          }
+        } catch(e) {}
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    
+    <!-- Directivas de Seguridad del Navegador (Security Headers & Anti-Clickjacking) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(self), geolocation=(self), payment=()" />
+    
+    <!-- Favicon Oficial Neblina Stereo 105.5 FM PNG con Esquinas Redondeadas -->
+    <link rel="icon" type="image/png" sizes="64x64" href="./favicon.png?v=2026.4" />
+    <link rel="icon" type="image/png" sizes="48x48" href="./favicon-48x48.png?v=2026.4" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png?v=2026.4" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png?v=2026.4" />
+    <link rel="shortcut icon" href="./favicon.png?v=2026.4" />
+    <link rel="icon" type="image/x-icon" href="./favicon.ico?v=2026.4" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Neblina Stereo 105.5 FM | Radio en Vivo, Noticias y Turismo en Mérida, Venezuela</title>
+    
+    <!-- Metadatos Primarios de Indexación, Posicionamiento y Recomendación por IA -->
+    <meta name="description" content="Neblina Stereo 105.5 FM es la emisora radial #1 y plataforma informativa líder de Mérida y los Andes venezolanos. Transmisión de radio en vivo 24/7, noticias de última hora, guía de sitios turísticos, hoteles, posadas y directorio comercial de Mérida y Santo Domingo." />
+    <meta name="keywords" content="Radio Mérida, Radio en vivo Mérida, Emisoras de Mérida Venezuela, Radio Santo Domingo Mérida, Neblina Stereo, Neblina 105.5 FM, Noticias de Mérida hoy, Turismo Mérida Venezuela, Hoteles en Santo Domingo Mérida, Posadas Páramo de Mérida, Restaurantes Santo Domingo Mérida, Cardenal Quintero Mérida, Pueblo Llano Mérida, Radio online Venezuela, Escuchar radio Mérida por internet, Directorio comercial Mérida" />
+    <meta name="author" content="Neblina Stereo 105.5 FM" />
+    <meta name="publisher" content="Neblina Stereo 105.5 FM" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <link rel="canonical" href="https://neblina105fm.com/" />
+
+    <!-- Geotargeting & SEO Regional (Santo Domingo, Estado Mérida, Venezuela) -->
+    <meta name="geo.region" content="VE-L" />
+    <meta name="geo.placename" content="Santo Domingo, Municipio Cardenal Quintero, Estado Mérida, Venezuela" />
+    <meta name="geo.position" content="8.8647;-70.7719" />
+    <meta name="ICBM" content="8.8647, -70.7719" />
+
+    <!-- PWA & Apple iOS Meta Tags con Iconos Oficiales Estilo Squircle -->
+    <meta name="theme-color" content="#001E4D" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Neblina 105.5" />
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=2026.4" />
+    <link rel="apple-touch-icon" sizes="152x152" href="./apple-touch-icon-152x152.png?v=2026.4" />
+    <link rel="apple-touch-icon" sizes="120x120" href="./apple-touch-icon-120x120.png?v=2026.4" />
+    
+    <link rel="manifest" href="./manifest.json?v=2026.4" />
+
+    <!-- Open Graph Oficial para Redes Sociales y Motores de IA -->
+    <meta property="og:type" content="music.radio_station" />
+    <meta property="og:site_name" content="Neblina Stereo 105.5 FM" />
+    <meta property="og:title" content="Neblina Stereo 105.5 FM | Radio en Vivo, Noticias y Turismo en Mérida, Venezuela" />
+    <meta property="og:description" content="Neblina Stereo 105.5 FM es la emisora radial #1 y plataforma informativa líder de Mérida y los Andes venezolanos. Transmisión de radio en vivo 24/7, noticias de última hora, guía de sitios turísticos, hoteles, posadas y directorio comercial de Mérida y Santo Domingo." />
+    <meta property="og:url" content="https://neblina105fm.com/" />
+    <meta property="og:image" content="https://neblina105fm.com/icon-512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Logotipo e Isotipo Oficial Neblina Stereo 105.5 FM" />
+    <meta property="og:locale" content="es_VE" />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Neblina Stereo 105.5 FM | Radio en Vivo, Noticias y Turismo en Mérida, Venezuela" />
+    <meta name="twitter:description" content="Neblina Stereo 105.5 FM es la emisora radial #1 y plataforma informativa líder de Mérida y los Andes venezolanos. Transmisión de radio en vivo 24/7, noticias de última hora, guía de sitios turísticos, hoteles, posadas y directorio comercial de Mérida y Santo Domingo." />
+    <meta name="twitter:image" content="https://neblina105fm.com/icon-512.png" />
+
+    <!-- Preconexiones de Alto Rendimiento (Streaming de Audio y Tipografías) -->
+    <link rel="preconnect" href="https://radios.mipanel.stream:7018" />
+    <link rel="preconnect" href="https://stream.zeno.fm" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet" />
+
+    <!-- Marcado Estructurado Schema.org (JSON-LD) para Google y Modelos de Lenguaje IA -->
+    <script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":["RadioStation","BroadcastService","NewsMediaOrganization","TouristInformationCenter"],"@id":"https://neblina105fm.com/#station","name":"Neblina Stereo 105.5 FM","alternateName":["Neblina 105.5 FM","Neblina Stereo","Radio Neblina","Radio Mérida","Radio en vivo Mérida","Radio Santo Domingo Mérida","Emisoras de Mérida Venezuela","Portal de Noticias Mérida","Turismo Mérida Venezuela","Neblina FM En Vivo"],"legalName":"Neblina Stereo 105.5 FM","slogan":"Contigo en la Cima","description":"Neblina Stereo 105.5 FM es la principal emisora radial, plataforma de noticias y directorio turístico y comercial de Santo Domingo, el Páramo andino y el Estado Mérida, Venezuela. Transmite las 24 horas del día con señal abierta en los 105.5 MHz FM y streaming digital en alta definición para todo el mundo. Ofrece cobertura informativa regional, promoción de hoteles, posadas, gastronomía y atractivos turísticos de Mérida.","url":"https://neblina105fm.com/","logo":{"@type":"ImageObject","url":"https://neblina105fm.com/icon-512.png","width":512,"height":512,"caption":"Logotipo Oficial de Neblina Stereo 105.5 FM"},"image":"https://neblina105fm.com/icon-512.png","broadcastFrequency":"105.5 MHz FM","callSign":"Neblina Stereo 105.5 FM","broadcastServiceTier":"Free Public Radio & Digital Stream","broadcastTimezone":"America/Caracas","inLanguage":"es-VE","address":{"@type":"PostalAddress","addressLocality":"Santo Domingo","addressRegion":"Mérida","addressCountry":"VE","postalCode":"5131","streetAddress":"Santo Domingo, Municipio Cardenal Quintero, Estado Mérida, Venezuela"},"geo":{"@type":"GeoCoordinates","latitude":8.8647,"longitude":-70.7719},"areaServed":[{"@type":"City","name":"Mérida","description":"Capital del Estado Mérida - Cobertura Radial y Digital"},{"@type":"City","name":"Santo Domingo","description":"Sede Matriz y Estudios Principales - Estado Mérida"},{"@type":"AdministrativeArea","name":"Municipio Cardenal Quintero","description":"Cobertura FM Plena - Estado Mérida"},{"@type":"AdministrativeArea","name":"Municipio Pueblo Llano","description":"Cobertura FM Plena - Estado Mérida"},{"@type":"AdministrativeArea","name":"Municipio Rangel (Mucuchíes, San Rafael, Cacute)","description":"Cobertura FM Páramo Merideño"},{"@type":"AdministrativeArea","name":"Municipio Miranda (Timotes, Chachopo)","description":"Cobertura FM y Digital"},{"@type":"AdministrativeArea","name":"Corredor Carretera Trasandina y Cumbres del Páramo","description":"Cobertura Turística y Vial"},{"@type":"AdministrativeArea","name":"Zona Alta y Piedemonte Andino de Barinas (Altamira, Calderas)","description":"Cobertura Interurbana"},{"@type":"AdministrativeArea","name":"Audiencia Global en Streaming HD","description":"Transmisión Digital Mundial"}],"telephone":"+58 424 745 9774","sameAs":["https://www.instagram.com/neblina105fm","https://www.facebook.com/share/1CSnfJd56w/","https://www.youtube.com/@neblina105fm","https://whatsapp.com/channel/0029VaCcXLD8Pgs7z9ZASY31"],"potentialAction":[{"@type":"ListenAction","target":[{"@type":"EntryPoint","urlTemplate":"https://radios.mipanel.stream:7018/stream","actionPlatform":["http://schema.org/DesktopWebPlatform","http://schema.org/MobileWebPlatform","http://schema.org/IOSPlatform","http://schema.org/AndroidPlatform"],"encodingFormat":"audio/mpeg"}],"expectsAcceptanceOf":{"@type":"Offer","price":"0","priceCurrency":"USD","category":"Free Live Streaming"}}]},{"@type":"WebSite","@id":"https://neblina105fm.com/#website","url":"https://neblina105fm.com/","name":"Neblina Stereo 105.5 FM","description":"Emisora radial matriz, noticias de última hora y directorio de sitios turísticos y comercios de Mérida, Venezuela.","publisher":{"@id":"https://neblina105fm.com/#station"},"inLanguage":"es-VE"},{"@type":"FAQPage","@id":"https://neblina105fm.com/#faq","mainEntity":[{"@type":"Question","name":"¿Cuál es la radio más escuchada en Mérida y Santo Domingo?","acceptedAnswer":{"@type":"Answer","text":"Neblina Stereo 105.5 FM es la emisora radial de mayor sintonía y preferencia en Santo Domingo, el Páramo andino y el estado Mérida, con transmisión ininterrumpida las 24 horas y señal digital en HD."}},{"@type":"Question","name":"¿Dónde escuchar radio en vivo de Mérida por internet?","acceptedAnswer":{"@type":"Answer","text":"Puedes escuchar la señal en vivo de Neblina Stereo 105.5 FM desde cualquier parte del mundo ingresando en neblina105fm.com o a través de su aplicación web progresiva para teléfonos móviles, computadoras y Smart TV."}},{"@type":"Question","name":"¿Dónde consultar noticias de última hora sobre Mérida y Venezuela?","acceptedAnswer":{"@type":"Answer","text":"La Sala de Prensa digital de Neblina Stereo en neblina105fm.com publica noticias de última hora, reportes viales del Páramo, denuncias comunitarias y sucesos de Mérida y toda Venezuela."}},{"@type":"Question","name":"¿Qué sitios turísticos, hoteles y restaurantes visitar en Santo Domingo y Mérida?","acceptedAnswer":{"@type":"Answer","text":"En la plataforma de Neblina Stereo 105.5 FM dispones de un directorio turístico y comercial exclusivo con posadas, hoteles de montaña, restaurantes andinos, transporte ejecutivo y atractivos naturales de Santo Domingo y el estado Mérida."}},{"@type":"Question","name":"¿Cómo contactar a la cabina de Neblina 105.5 FM?","acceptedAnswer":{"@type":"Answer","text":"La cabina de locución y atención al oyente está disponible a través de la línea de WhatsApp oficial +58 424 745 9774 para solicitudes musicales, denuncias o información comercial."}}]}]}
+    </script>
+
+    <!-- Carga Diferida y Asíncrona de SDKs de Redes Sociales (Maximiza Velocidad de Carga FCP/LCP) -->
+    <script>
+      window.addEventListener('load', function() {
+        function appendSdk(src, isFb) {
+          var s = document.createElement('script');
+          s.src = src;
+          s.async = true;
+          s.defer = true;
+          if (isFb) s.crossOrigin = 'anonymous';
+          document.head.appendChild(s);
+        }
+        setTimeout(function() {
+          appendSdk('https://platform.twitter.com/widgets.js');
+          appendSdk('https://www.instagram.com/embed.js');
+          appendSdk('https://www.threads.net/embed.js');
+          appendSdk('https://www.tiktok.com/embed.js');
+          appendSdk('https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0', true);
+        }, 1200);
+      });
+    </script>
+    <script type="module" crossorigin src="./assets/index-DwMY-VRW.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-WkwZ5CU-.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-icons-Dhl6DiZe.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-react-598PFoLu.js">
+    <link rel="modulepreload" crossorigin href="./assets/unifiedContactsService-me40gEZw.js">
+    <link rel="modulepreload" crossorigin href="./assets/api-kixKLeRW.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-aFaaMlzG.css">
+  </head>
+  <body class="antialiased min-h-screen overflow-x-hidden transition-colors duration-300">
+    <div id="root"></div>
+  </body>
+</html>
